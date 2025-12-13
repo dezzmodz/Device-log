@@ -35,20 +35,21 @@ function parseDevice() {
 
   if(/Android/i.test(ua)) {
     deviceType = "Android";
-    const matchModel = ua.match(/;\s([^)]+)\sBuild/); // ambil model Android
-    deviceName = matchModel ? matchModel[1].trim() : "Android Device"; // fallback
+    // Ambil model Android kalau ada
+    const matchModel = ua.match(/;\s([^)]+)\sBuild/);
+    deviceName = matchModel ? matchModel[1].trim() : ua; // fallback ke userAgent penuh
     const matchVer = ua.match(/Android\s([0-9.]+)/);
-    osVersion = matchVer ? matchVer[1] : "";
+    osVersion = matchVer ? matchVer[1] : "Unknown";
   } else if(/iPhone/i.test(ua)) {
     deviceType = "iOS";
     deviceName = "iPhone";
     const matchVer = ua.match(/OS\s([0-9_]+)/);
-    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "";
+    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
   } else if(/iPad/i.test(ua)) {
     deviceType = "iOS";
     deviceName = "iPad";
     const matchVer = ua.match(/OS\s([0-9_]+)/);
-    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "";
+    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
   }
 
   const browser = (() => {
@@ -73,7 +74,7 @@ function getDeviceInfo(key="UNKNOWN") {
 
   return {
     key: key,
-    device_name: parsed.deviceName || parsed.deviceType, // fallback
+    device_name: parsed.deviceName || parsed.deviceType, // fallback ke deviceType
     device_type: parsed.deviceType,
     os_version: parsed.osVersion || "Unknown",
     device_id: device_id,
