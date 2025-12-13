@@ -36,19 +36,19 @@ function parseDevice() {
   if(/Android/i.test(ua)) {
     deviceType = "Android";
     const matchModel = ua.match(/;\s([^)]+)\sBuild/); // ambil model Android
-    if(matchModel) deviceName = matchModel[1].trim();
+    deviceName = matchModel ? matchModel[1].trim() : "Android Device"; // fallback
     const matchVer = ua.match(/Android\s([0-9.]+)/);
-    if(matchVer) osVersion = matchVer[1];
+    osVersion = matchVer ? matchVer[1] : "";
   } else if(/iPhone/i.test(ua)) {
     deviceType = "iOS";
     deviceName = "iPhone";
     const matchVer = ua.match(/OS\s([0-9_]+)/);
-    if(matchVer) osVersion = matchVer[1].replace(/_/g,".");
+    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "";
   } else if(/iPad/i.test(ua)) {
     deviceType = "iOS";
     deviceName = "iPad";
     const matchVer = ua.match(/OS\s([0-9_]+)/);
-    if(matchVer) osVersion = matchVer[1].replace(/_/g,".");
+    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "";
   }
 
   const browser = (() => {
@@ -73,9 +73,9 @@ function getDeviceInfo(key="UNKNOWN") {
 
   return {
     key: key,
-    device_name: parsed.deviceName,
+    device_name: parsed.deviceName || parsed.deviceType, // fallback
     device_type: parsed.deviceType,
-    os_version: parsed.osVersion,
+    os_version: parsed.osVersion || "Unknown",
     device_id: device_id,
     browser: parsed.browser,
     screen: screenSize,
