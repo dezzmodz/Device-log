@@ -24,30 +24,28 @@ button { background:#7dff7d; border:none; padding:8px 14px; cursor:pointer; font
 <div id="deviceContainer"></div>
 
 <script>
-// ============================
-// PARSING DEVICE & OS
-// ============================
+// ===== UTILS =====
+function encodeBase64UTF8(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+// ===== PARSING DEVICE =====
 function parseDevice() {
   const ua = navigator.userAgent;
-  let deviceType = "PC";
-  let deviceName = "PC";
-  let osVersion = "";
-
+  let deviceType = "PC", deviceName = "PC", osVersion = "";
+  
   if(/Android/i.test(ua)) {
     deviceType = "Android";
-    // Ambil model Android kalau ada
     const matchModel = ua.match(/;\s([^)]+)\sBuild/);
-    deviceName = matchModel ? matchModel[1].trim() : ua; // fallback ke userAgent penuh
+    deviceName = matchModel ? matchModel[1].trim() : "Android Device";
     const matchVer = ua.match(/Android\s([0-9.]+)/);
     osVersion = matchVer ? matchVer[1] : "Unknown";
   } else if(/iPhone/i.test(ua)) {
-    deviceType = "iOS";
-    deviceName = "iPhone";
+    deviceType = "iOS"; deviceName = "iPhone";
     const matchVer = ua.match(/OS\s([0-9_]+)/);
     osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
   } else if(/iPad/i.test(ua)) {
-    deviceType = "iOS";
-    deviceName = "iPad";
+    deviceType = "iOS"; deviceName = "iPad";
     const matchVer = ua.match(/OS\s([0-9_]+)/);
     osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
   }
@@ -64,17 +62,15 @@ function parseDevice() {
   return {deviceType, deviceName, osVersion, browser};
 }
 
-// ============================
-// DEVICE INFO
-// ============================
+// ===== DEVICE INFO =====
 function getDeviceInfo(key="UNKNOWN") {
   const parsed = parseDevice();
   const screenSize = screen.width + "x" + screen.height;
-  const device_id = btoa(navigator.userAgent + screenSize + Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const device_id = encodeBase64UTF8(navigator.userAgent + screenSize + Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   return {
     key: key,
-    device_name: parsed.deviceName || parsed.deviceType, // fallback ke deviceType
+    device_name: parsed.deviceName || parsed.deviceType,
     device_type: parsed.deviceType,
     os_version: parsed.osVersion || "Unknown",
     device_id: device_id,
@@ -84,24 +80,25 @@ function getDeviceInfo(key="UNKNOWN") {
   };
 }
 
-// ============================
-// SAVE LOG
-// ============================
+// ===== SAVE LOG (tanpa duplikasi) =====
 function saveDeviceLog(key) {
   const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
-  logs.push(getDeviceInfo(key));
-  localStorage.setItem("device_logs", JSON.stringify(logs));
+  const info = getDeviceInfo(key);
+
+  // cek duplikasi
+  if(!logs.some(l => l.device_id === info.device_id && l.key === key)){
+    logs.push(info);
+    localStorage.setItem("device_logs", JSON.stringify(logs));
+  }
 }
 
-// ============================
-// LOAD DEVICE CARDS
-// ============================
+// ===== LOAD DEVICE CARDS =====
 function loadLogs() {
   const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
   const container = document.getElementById("deviceContainer");
   container.innerHTML = "";
 
-  logs.forEach((l,i)=>{
+  logs.forEach((l)=>{
     const div = document.createElement("div");
     div.className = "device-card";
     let typeClass = "device-PC";
@@ -120,16 +117,22 @@ function loadLogs() {
   });
 }
 
-// ============================
-// COPY TO CLIPBOARD
-// ============================
+// ===== COPY TO CLIPBOARD =====
 function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(()=>alert('Copied: '+text));
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>alert('Copied: '+text));
+  } else {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    alert("Copied: " + text);
+  }
 }
 
-// ============================
-// CLEAR LOG
-// ============================
+// ===== CLEAR LOG =====
 function clearLogs() {
   if(confirm("Hapus semua log device?")){
     localStorage.removeItem("device_logs");
@@ -137,17 +140,13 @@ function clearLogs() {
   }
 }
 
-// ============================
-// SIMULASI USER LOGIN
-// ============================
+// ===== SIMULASI USER LOGIN =====
 saveDeviceLog("DEZZ_");
 
-// ============================
-// AUTO REFRESH LOG SETIAP 5 DETIK
-// ============================
+// ===== AUTO REFRESH LOG =====
 loadLogs();
 setInterval(loadLogs,5000);
-</script>
 
+</script>
 </body>
 </html>
