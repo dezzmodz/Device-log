@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel / Device Log</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#0b1116;
+  color:#fff;
+  padding:20px;
+}
+h1 { color:#7dff7d }
+table {
+  width:100%;
+  border-collapse: collapse;
+  margin-top:15px;
+}
+th, td {
+  border:1px solid #333;
+  padding:8px;
+  font-size:13px;
+}
+th { background:#111 }
+button {
+  background:#7dff7d;
+  border:none;
+  padding:8px 14px;
+  cursor:pointer;
+  font-weight:bold;
+}
+small { color:#aaa }
+</style>
+</head>
+<body>
+
+<h1>🔐 ADMIN PANEL – DEVICE LOG</h1>
+<button onclick="clearLogs()">🗑️ Clear Log</button>
+
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Key</th>
+<th>Device ID</th>
+<th>Device</th>
+<th>Browser</th>
+<th>Screen</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody id="logTable"></tbody>
+</table>
+
+<script>
+// ============================
+// DEVICE FINGERPRINT
+// ============================
+function getDeviceInfo(key="UNKNOWN") {
+  return {
+    key: key,
+    device_id: btoa(
+      navigator.userAgent +
+      screen.width + "x" + screen.height +
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    ),
+    device: /Android/i.test(navigator.userAgent) ? "Android" :
+            /iPhone|iPad/i.test(navigator.userAgent) ? "iOS" : "PC",
+    browser: navigator.userAgent,
+    screen: screen.width + "x" + screen.height,
+    time: new Date().toLocaleString()
+  };
+}
+
+// ============================
+// SAVE LOG (SIMULASI API)
+// ============================
+function saveDeviceLog(key) {
+  const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
+  logs.push(getDeviceInfo(key));
+  localStorage.setItem("device_logs", JSON.stringify(logs));
+}
+
+// ============================
+// LOAD ADMIN TABLE
+// ============================
+function loadLogs() {
+  const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
+  const tbody = document.getElementById("logTable");
+  tbody.innerHTML = "";
+
+  logs.forEach((l, i) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${l.key}</td>
+        <td><small>${l.device_id}</small></td>
+        <td>${l.device}</td>
+        <td><small>${l.browser}</small></td>
+        <td>${l.screen}</td>
+        <td>${l.time}</td>
+      </tr>
+    `;
+  });
+}
+
+// ============================
+// CLEAR LOG
+// ============================
+function clearLogs() {
+  if(confirm("Hapus semua log device?")){
+    localStorage.removeItem("device_logs");
+    loadLogs();
+  }
+}
+
+// ============================
+// DEMO: SIMULASI USER LOGIN
+// ============================
+// INI NANTI DIPANGGIL SAAT LOGIN SUKSES
+saveDeviceLog("DEZZ-KEY-001");
+
+// LOAD ADMIN
+loadLogs();
+</script>
+
+</body>
+</html>
