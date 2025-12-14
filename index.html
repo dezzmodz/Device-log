@@ -4,88 +4,76 @@
 <meta charset="UTF-8">
 <title>Admin Panel / Device Log</title>
 <style>
-body { font-family: Arial; background:#0b1116; color:#fff; padding:20px; margin:0; }
-h1 { color:#7dff7d; margin-bottom:10px; }
-button { background:#7dff7d; border:none; padding:8px 14px; cursor:pointer; font-weight:bold; margin-bottom:15px; }
-#deviceContainer { display:flex; flex-wrap:wrap; gap:15px; }
-.device-card { background:#111; padding:15px; border-radius:8px; width:320px; box-shadow:0 0 10px rgba(0,255,125,0.3); }
-.device-card h3 { margin:0 0 10px 0; color:#7dff7d; font-size:16px; word-break: break-word; }
-.device-card p { margin:4px 0; font-size:13px; word-break: break-word; }
-.copy-btn { background:#333; color:#7dff7d; border:none; padding:2px 6px; cursor:pointer; font-size:11px; margin-left:5px; }
-.device-Android { color:#ffae42; font-weight:bold; }
-.device-iOS { color:#42aaff; font-weight:bold; }
-.device-PC { color:#7dff7d; font-weight:bold; }
+body {
+  font-family: Arial, sans-serif;
+  background:#0b1116;
+  color:#fff;
+  padding:20px;
+}
+h1 { color:#7dff7d }
+table {
+  width:100%;
+  border-collapse: collapse;
+  margin-top:15px;
+}
+th, td {
+  border:1px solid #333;
+  padding:8px;
+  font-size:13px;
+}
+th { background:#111 }
+button {
+  background:#7dff7d;
+  border:none;
+  padding:8px 14px;
+  cursor:pointer;
+  font-weight:bold;
+}
+small { color:#aaa }
 </style>
 </head>
 <body>
 
 <h1>🔐 ADMIN PANEL – DEVICE LOG</h1>
 <button onclick="clearLogs()">🗑️ Clear Log</button>
-<div id="deviceContainer"></div>
+
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Key</th>
+<th>Device ID</th>
+<th>Device</th>
+<th>Browser</th>
+<th>Screen</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody id="logTable"></tbody>
+</table>
 
 <script>
 // ============================
-// PARSING DEVICE & OS
-// ============================
-function parseDevice() {
-  const ua = navigator.userAgent;
-  let deviceType = "PC";
-  let deviceName = "PC";
-  let osVersion = "";
-
-  if(/Android/i.test(ua)) {
-    deviceType = "Android";
-    // Ambil model Android kalau ada
-    const matchModel = ua.match(/;\s([^)]+)\sBuild/);
-    deviceName = matchModel ? matchModel[1].trim() : ua; // fallback ke userAgent penuh
-    const matchVer = ua.match(/Android\s([0-9.]+)/);
-    osVersion = matchVer ? matchVer[1] : "Unknown";
-  } else if(/iPhone/i.test(ua)) {
-    deviceType = "iOS";
-    deviceName = "iPhone";
-    const matchVer = ua.match(/OS\s([0-9_]+)/);
-    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
-  } else if(/iPad/i.test(ua)) {
-    deviceType = "iOS";
-    deviceName = "iPad";
-    const matchVer = ua.match(/OS\s([0-9_]+)/);
-    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
-  }
-
-  const browser = (() => {
-    if(ua.indexOf("Chrome") > -1) return "Chrome";
-    if(ua.indexOf("Firefox") > -1) return "Firefox";
-    if(ua.indexOf("Safari") > -1 && ua.indexOf("Chrome") === -1) return "Safari";
-    if(ua.indexOf("Edge") > -1) return "Edge";
-    if(ua.indexOf("Trident") > -1) return "IE";
-    return "Unknown";
-  })();
-
-  return {deviceType, deviceName, osVersion, browser};
-}
-
-// ============================
-// DEVICE INFO
+// DEVICE FINGERPRINT
 // ============================
 function getDeviceInfo(key="UNKNOWN") {
-  const parsed = parseDevice();
-  const screenSize = screen.width + "x" + screen.height;
-  const device_id = btoa(navigator.userAgent + screenSize + Intl.DateTimeFormat().resolvedOptions().timeZone);
-
   return {
     key: key,
-    device_name: parsed.deviceName || parsed.deviceType, // fallback ke deviceType
-    device_type: parsed.deviceType,
-    os_version: parsed.osVersion || "Unknown",
-    device_id: device_id,
-    browser: parsed.browser,
-    screen: screenSize,
+    device_id: btoa(
+      navigator.userAgent +
+      screen.width + "x" + screen.height +
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    ),
+    device: /Android/i.test(navigator.userAgent) ? "Android" :
+            /iPhone|iPad/i.test(navigator.userAgent) ? "iOS" : "PC",
+    browser: navigator.userAgent,
+    screen: screen.width + "x" + screen.height,
     time: new Date().toLocaleString()
   };
 }
 
 // ============================
-// SAVE LOG
+// SAVE LOG (SIMULASI API)
 // ============================
 function saveDeviceLog(key) {
   const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
@@ -94,37 +82,26 @@ function saveDeviceLog(key) {
 }
 
 // ============================
-// LOAD DEVICE CARDS
+// LOAD ADMIN TABLE
 // ============================
 function loadLogs() {
   const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
-  const container = document.getElementById("deviceContainer");
-  container.innerHTML = "";
+  const tbody = document.getElementById("logTable");
+  tbody.innerHTML = "";
 
-  logs.forEach((l,i)=>{
-    const div = document.createElement("div");
-    div.className = "device-card";
-    let typeClass = "device-PC";
-    if(l.device_type==="Android") typeClass="device-Android";
-    if(l.device_type==="iOS") typeClass="device-iOS";
-
-    div.innerHTML = `
-      <h3>${l.device_name} (${l.os_version}) <span class="${typeClass}">${l.device_type}</span></h3>
-      <p>Key: ${l.key} <button class="copy-btn" onclick="copyToClipboard('${l.key}')">Copy</button></p>
-      <p>Device ID: ${l.device_id} <button class="copy-btn" onclick="copyToClipboard('${l.device_id}')">Copy</button></p>
-      <p>Browser: ${l.browser}</p>
-      <p>Screen: ${l.screen}</p>
-      <p>Time: ${l.time}</p>
+  logs.forEach((l, i) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${l.key}</td>
+        <td><small>${l.device_id}</small></td>
+        <td>${l.device}</td>
+        <td><small>${l.browser}</small></td>
+        <td>${l.screen}</td>
+        <td>${l.time}</td>
+      </tr>
     `;
-    container.appendChild(div);
   });
-}
-
-// ============================
-// COPY TO CLIPBOARD
-// ============================
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(()=>alert('Copied: '+text));
 }
 
 // ============================
@@ -138,15 +115,13 @@ function clearLogs() {
 }
 
 // ============================
-// SIMULASI USER LOGIN
+// DEMO: SIMULASI USER LOGIN
 // ============================
-saveDeviceLog("DEZZ-");
+// INI NANTI DIPANGGIL SAAT LOGIN SUKSES
+saveDeviceLog("DEZZ-KEY-001");
 
-// ============================
-// AUTO REFRESH LOG SETIAP 5 DETIK
-// ============================
+// LOAD ADMIN
 loadLogs();
-setInterval(loadLogs,5000);
 </script>
 
 </body>
