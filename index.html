@@ -4,78 +4,150 @@
 <meta charset="UTF-8">
 <title>Admin Panel / Device Log</title>
 <style>
-body{font-family:Arial;background:#0b1116;color:#fff;padding:20px;margin:0}
-h1{color:#7dff7d}
-button{background:#7dff7d;border:none;padding:8px 14px;font-weight:bold;cursor:pointer}
-#deviceContainer{display:flex;flex-wrap:wrap;gap:15px}
-.device-card{background:#111;padding:15px;border-radius:8px;width:320px}
-.copy-btn{background:#333;color:#7dff7d;border:none;font-size:11px;margin-left:5px}
-.device-Android{color:#ffae42;font-weight:bold}
-.device-iOS{color:#42aaff;font-weight:bold}
-.device-PC{color:#7dff7d;font-weight:bold}
+body { font-family: Arial; background:#0b1116; color:#fff; padding:20px; margin:0; }
+h1 { color:#7dff7d; margin-bottom:10px; }
+button { background:#7dff7d; border:none; padding:8px 14px; cursor:pointer; font-weight:bold; margin-bottom:15px; }
+#deviceContainer { display:flex; flex-wrap:wrap; gap:15px; }
+.device-card { background:#111; padding:15px; border-radius:8px; width:320px; box-shadow:0 0 10px rgba(0,255,125,0.3); }
+.device-card h3 { margin:0 0 10px 0; color:#7dff7d; font-size:16px; word-break: break-word; }
+.device-card p { margin:4px 0; font-size:13px; word-break: break-word; }
+.copy-btn { background:#333; color:#7dff7d; border:none; padding:2px 6px; cursor:pointer; font-size:11px; margin-left:5px; }
+.device-Android { color:#ffae42; font-weight:bold; }
+.device-iOS { color:#42aaff; font-weight:bold; }
+.device-PC { color:#7dff7d; font-weight:bold; }
 </style>
 </head>
 <body>
 
 <h1>🔐 ADMIN PANEL – DEVICE LOG</h1>
-<button id="clearBtn">🗑️ Clear Log</button>
+<button onclick="clearLogs()">🗑️ Clear Log</button>
 <div id="deviceContainer"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<script>
+// ============================
+// PARSING DEVICE & OS
+// ============================
+function parseDevice() {
+  const ua = navigator.userAgent;
+  let deviceType = "PC";
+  let deviceName = "PC";
+  let osVersion = "";
 
-/* ===== FIREBASE CONFIG ===== */
-const firebaseConfig = {
-  apiKey: "ISI",
-  authDomain: "ISI",
-  projectId: "ISI",
-  storageBucket: "ISI",
-  messagingSenderId: "ISI",
-  appId: "ISI"
-};
+  if(/Android/i.test(ua)) {
+    deviceType = "Android";
+    // Ambil model Android kalau ada
+    const matchModel = ua.match(/;\s([^)]+)\sBuild/);
+    deviceName = matchModel ? matchModel[1].trim() : ua; // fallback ke userAgent penuh
+    const matchVer = ua.match(/Android\s([0-9.]+)/);
+    osVersion = matchVer ? matchVer[1] : "Unknown";
+  } else if(/iPhone/i.test(ua)) {
+    deviceType = "iOS";
+    deviceName = "iPhone";
+    const matchVer = ua.match(/OS\s([0-9_]+)/);
+    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
+  } else if(/iPad/i.test(ua)) {
+    deviceType = "iOS";
+    deviceName = "iPad";
+    const matchVer = ua.match(/OS\s([0-9_]+)/);
+    osVersion = matchVer ? matchVer[1].replace(/_/g,".") : "Unknown";
+  }
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const logsCol = collection(db,"device_logs");
+  const browser = (() => {
+    if(ua.indexOf("Chrome") > -1) return "Chrome";
+    if(ua.indexOf("Firefox") > -1) return "Firefox";
+    if(ua.indexOf("Safari") > -1 && ua.indexOf("Chrome") === -1) return "Safari";
+    if(ua.indexOf("Edge") > -1) return "Edge";
+    if(ua.indexOf("Trident") > -1) return "IE";
+    return "Unknown";
+  })();
 
-const container = document.getElementById("deviceContainer");
-const clearBtn = document.getElementById("clearBtn");
+  return {deviceType, deviceName, osVersion, browser};
+}
 
-/* ===== LOAD LOG ===== */
-async function loadLogs(){
-  container.innerHTML="";
-  const q = query(logsCol, orderBy("timestamp","desc"));
-  const snap = await getDocs(q);
+// ============================
+// DEVICE INFO
+// ============================
+function getDeviceInfo(key="UNKNOWN") {
+  const parsed = parseDevice();
+  const screenSize = screen.width + "x" + screen.height;
+  const device_id = btoa(navigator.userAgent + screenSize + Intl.DateTimeFormat().resolvedOptions().timeZone);
 
-  snap.forEach(d=>{
-    const x = d.data();
-    let cls="device-PC";
-    if(x.device_type==="Android") cls="device-Android";
-    if(x.device_type==="iOS") cls="device-iOS";
+  return {
+    key: key,
+    device_name: parsed.deviceName || parsed.deviceType, // fallback ke deviceType
+    device_type: parsed.deviceType,
+    os_version: parsed.osVersion || "Unknown",
+    device_id: device_id,
+    browser: parsed.browser,
+    screen: screenSize,
+    time: new Date().toLocaleString()
+  };
+}
 
-    container.innerHTML+=`
-      <div class="device-card">
-        <b>${x.device_name}</b>
-        <span class="${cls}">(${x.device_type})</span>
-        <p>Key: ${x.key}</p>
-        <p>ID: ${x.device_id}</p>
-        <p>${new Date(x.timestamp).toLocaleString()}</p>
-      </div>
+// ============================
+// SAVE LOG
+// ============================
+function saveDeviceLog(key) {
+  const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
+  logs.push(getDeviceInfo(key));
+  localStorage.setItem("device_logs", JSON.stringify(logs));
+}
+
+// ============================
+// LOAD DEVICE CARDS
+// ============================
+function loadLogs() {
+  const logs = JSON.parse(localStorage.getItem("device_logs") || "[]");
+  const container = document.getElementById("deviceContainer");
+  container.innerHTML = "";
+
+  logs.forEach((l,i)=>{
+    const div = document.createElement("div");
+    div.className = "device-card";
+    let typeClass = "device-PC";
+    if(l.device_type==="Android") typeClass="device-Android";
+    if(l.device_type==="iOS") typeClass="device-iOS";
+
+    div.innerHTML = `
+      <h3>${l.device_name} (${l.os_version}) <span class="${typeClass}">${l.device_type}</span></h3>
+      <p>Key: ${l.key} <button class="copy-btn" onclick="copyToClipboard('${l.key}')">Copy</button></p>
+      <p>Device ID: ${l.device_id} <button class="copy-btn" onclick="copyToClipboard('${l.device_id}')">Copy</button></p>
+      <p>Browser: ${l.browser}</p>
+      <p>Screen: ${l.screen}</p>
+      <p>Time: ${l.time}</p>
     `;
+    container.appendChild(div);
   });
 }
 
-/* ===== CLEAR LOG ===== */
-clearBtn.onclick = async ()=>{
-  if(!confirm("Hapus semua log?")) return;
-  const snap = await getDocs(logsCol);
-  snap.forEach(d=>deleteDoc(doc(db,"device_logs",d.id)));
-  loadLogs();
-};
+// ============================
+// COPY TO CLIPBOARD
+// ============================
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(()=>alert('Copied: '+text));
+}
 
+// ============================
+// CLEAR LOG
+// ============================
+function clearLogs() {
+  if(confirm("Hapus semua log device?")){
+    localStorage.removeItem("device_logs");
+    loadLogs();
+  }
+}
+
+// ============================
+// SIMULASI USER LOGIN
+// ============================
+saveDeviceLog("DEZZ-");
+
+// ============================
+// AUTO REFRESH LOG SETIAP 5 DETIK
+// ============================
 loadLogs();
 setInterval(loadLogs,5000);
 </script>
+
 </body>
 </html>
