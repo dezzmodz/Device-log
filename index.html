@@ -1,784 +1,131 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Generator KEY+FILE</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Formatter Nama & Link</title>
+
 <style>
-  :root{
-    --bg-1:#0b1116; --bg-2:#0f1a21; --accent:#7dff7d; --card:rgba(0,0,0,0.55);
-    --glass: rgba(255,255,255,0.04);
-  }
-  html,body{height:100%;margin:0;font-family:'Orbitron',sans-serif;
-    background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
-    color:var(--accent);transition:background 800ms ease}
-  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-  .card{width:100%;max-width:1100px;min-height:78vh;border-radius:16px;padding:18px;
-    background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
-    border:2px solid rgba(127,255,150,0.06);box-shadow:0 12px 60px rgba(0,0,0,0.6);
-    display:grid;grid-template-columns:1fr 360px;gap:16px;backdrop-filter: blur(4px)}
-  @media (max-width:900px){.card{grid-template-columns:1fr;min-height:100vh;border-radius:10px}}
-  h1{margin:0;font-size:20px}
-  .key-display{margin-top:12px;padding:20px;border-radius:12px;background:var(--card);
-    font-size:20px;font-weight:800;min-height:140px;display:flex;align-items:center;justify-content:center;
-    text-align:center;position:relative;flex-direction:column;color:var(--accent)}
-  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  button,.btn{background:var(--accent);color:#000;border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
-  .btn-ghost{background:transparent;border:1px solid rgba(127,255,150,0.08);color:var(--accent);backdrop-filter: blur(2px)}
-  .progress-bar{width:100%;height:12px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;margin-top:14px}
-  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg, rgba(255,255,255,0.06), var(--accent));transition:width 250ms linear;box-shadow:0 6px 20px rgba(0,0,0,0.5)}
-  .note{font-size:13px;opacity:0.95;margin-top:8px}
-  .toprow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .logout{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent);padding:8px;border-radius:8px}
-  .small{font-size:13px;opacity:0.85}
-  /* Social links style (block) */
-  .links { margin-top:8px }
-  .links a { display:block; margin:6px 0; text-decoration:none; color:var(--accent); font-weight:700; font-size:15px; padding:8px 10px; border-radius:8px; background: rgba(255,255,255,0.02); box-shadow: 0 6px 18px rgba(0,0,0,0.3); transition: all .18s ease }
-  .links a:hover { color:#fff; text-shadow: 0 0 8px currentColor, 0 0 20px currentColor; transform: translateY(-2px) }
-  .admin-note{font-size:12px;opacity:0.85;margin-top:8px}
-  .modal-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none}
-  .modal{min-width:320px;max-width:780px;background:linear-gradient(180deg,rgba(0,0,0,0.75),rgba(0,0,0,0.5));border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6);transform:scale(.95);opacity:0;transition:all 240ms ease;pointer-events:auto}
-  .modal.show{transform:scale(1);opacity:1}
-  .neon-title{font-size:18px;font-weight:900;text-align:center;color:var(--accent);text-shadow:0 0 12px rgba(0,255,150,0.18),0 0 30px rgba(0,255,150,0.08)}
-  .modal-key {
-  font-family: monospace;
-  margin: 20px 0;
-  padding: 30px;
-  border-radius: 20px;
-  background: linear-gradient(90deg,#bfffbf,var(--accent));
-  text-align: center;
-  font-size: 15px;
-  color: #000;
-  box-shadow: 5px 30px rgba(0,255,150,0.08);
-
-  /* ===== FIX TEKS KELUAR ===== */
-  word-wrap: break-word;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;}
-  .modal-meta{font-size:13px;opacity:0.85;text-align:center;margin-top:6px}
-  .neon-glow{box-shadow:0 6px 28px rgba(0,255,150,0.12), 0 0 80px rgba(0,255,150,0.06)}
-  .flex-center{display:flex;align-items:center;gap:8px}
-
-  /* neon clock */
-  .neon-clock { font-family: 'Orbitron', sans-serif; font-weight:700; font-size:14px; color:var(--accent);
-    text-shadow:0 0 6px rgba(125,255,125,0.9),0 0 12px rgba(125,255,125,0.6),0 0 20px rgba(125,255,125,0.35); opacity:0.95; white-space:nowrap; pointer-events:none;}
-  #clockTopWrap { position: fixed; top: 12px; right: 18px; z-index:12000; display:flex; align-items:center; gap:10px; }
-
-  /* neon-glass login */
-  .login-overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.7));display:flex;align-items:center;justify-content:center;z-index:9999}
-  .login-card{
-    width:360px;padding:18px;border-radius:14px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-    border:1px solid rgba(127,255,150,0.06);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px) saturate(1.1);
-    position:relative; overflow:hidden;
-  }
-  .login-card::before{ content:""; position:absolute; inset:0; pointer-events:none; background: linear-gradient(90deg, rgba(127,255,150,0.02), rgba(127,255,150,0.005)); mix-blend-mode: overlay; }
-  .login-title{display:flex;align-items:center;gap:10px}
-  .glass-input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.16);color:var(--accent);box-sizing:border-box;font-weight:700}
-  .login-note{font-size:13px;opacity:0.9;margin-top:8px}
-
-  /* blinking copy button */
-  .btn-copy { position:relative; overflow:visible; transition:transform .12s ease; box-shadow: 0 8px 30px rgba(125,255,125,0.08); border-radius:10px; font-weight:800 }
-  .btn-copy::after{ content:""; position:absolute; inset:0; border-radius:10px; box-shadow: 0 0 10px rgba(125,255,125,0.45), 0 0 30px rgba(125,255,125,0.25), 0 0 60px rgba(125,255,125,0.06); filter: blur(6px); opacity:0.0; animation: copy-glow 2s linear infinite; pointer-events:none; }
-  @keyframes copy-glow{ 0%{opacity:0}20%{opacity:0.6}50%{opacity:0.95}80%{opacity:0.6}100%{opacity:0} }
-  .btn-copy.blink::after{ animation: copy-glow-fast 0.9s linear infinite; }
-  @keyframes copy-glow-fast{0%{opacity:0}20%{opacity:0.9}50%{opacity:1}80%{opacity:0.9}100%{opacity:0} }
-  .disabled { opacity:0.45; pointer-events:none; filter:grayscale(0.2); }
-
-  .note-strong{font-weight:800;font-size:12px}
-  /* small responsive */
-  @media (max-width:700px){ .card{padding:12px} .key-display{min-height:160px} }
-
-  /* ====== NEON STRIKE & BLINK (looping) ====== */
-  .neon-strike {
-    position: relative;
-    display: inline-block;
-    color: #00eaff; /* teks neon color */
-    text-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff;
-    font-weight: 900;
-    /* blinking text (subtle) */
-    animation: neonTextBlink 1.2s linear infinite;
-  }
-
-  .neon-strike::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg,#00eaff,#64ff35); /* neon gradient line */
-    box-shadow: 0 0 10px #00eaff, 0 0 20px #64ff35;
-    /* blink animation for the strike line (looping) */
-    animation: neonStrikeBlink 1.2s linear infinite;
-  }
-
-  @keyframes neonTextBlink {
-    0% { opacity: 1; filter: drop-shadow(0 0 6px #00eaff); }
-    50% { opacity: 0.7; filter: drop-shadow(0 0 3px #00eaff); }
-    100% { opacity: 1; filter: drop-shadow(0 0 6px #00eaff); }
-  }
-
-  @keyframes neonStrikeBlink {
-    0% { opacity: 1; width: 100%; transform: translateY(-50%) scaleX(1); }
-    50% { opacity: 0.45; transform: translateY(-50%) scaleX(0.98); }
-    100% { opacity: 1; transform: translateY(-50%) scaleX(1); }
-  }
-
-  /* ====== SIMPLE POPUP/TOAST ====== */
-  .toast {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    bottom: 400px;
-    background: rgba(0,0,0,0.9);
-    color: #00eaff;
-    padding: 25px 25px;
-    border-radius: 10px;
-    display: none;
-    z-index: 20000;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 12px #00eaff;
-    font-weight: 900;
-  }
-  .toast.show {
-    display: block;
-    animation: toastIn 0.28s ease;
-  }
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(30px) scale(.98); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-  }
-  .login-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  object-fit: cover;
-  filter: drop-shadow(0 6px 18px rgba(125,255,125,0.20));
-  border: 2px solid rgba(125,255,125,0.9);
+body{
+  background:#0b0b0b;
+  color:#00ffcc;
+  font-family:Arial, sans-serif;
+  padding:20px;
 }
-  .title-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
-  filter: drop-shadow(0 4px 10px rgba(0,255,150,0.35));
-  border: 2px solid rgba(0,255,150,0.8);
+textarea, input{
+  width:100%;
+  background:#111;
+  color:#0f0;
+  border:1px solid #00ffcc;
+  padding:8px;
+  font-size:14px;
+  margin-top:6px;
+}
+textarea{height:120px;}
+button{
+  margin-top:12px;
+  padding:10px 20px;
+  background:#00ffcc;
+  color:#000;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+pre{
+  margin-top:15px;
+  background:#111;
+  color:#0f0;
+  padding:10px;
+  min-height:120px;
+  white-space:pre-wrap;
+}
+.options{
+  margin-top:10px;
+  font-size:13px;
+}
+#status{
+  margin-top:8px;
+  font-size:12px;
+  opacity:.7;
 }
 </style>
 </head>
+
 <body>
 
-  <!-- NEON CLOCK TOP RIGHT -->
-  <div id="clockTopWrap">
-    <div id="clockNeonTop" class="neon-clock">--</div>
-  </div>
+<h3>NAMA DEPAN (1 BARIS = 1 DATA)</h3>
+<textarea id="prefixList" placeholder="VIP
+ADMIN
+MEMBER
+OWNER"></textarea>
 
-<div class="wrap">
-  <div class="card" role="main">
-    <div>
-      <div class="toprow">
-        <img src="https://files.catbox.moe/5pf5s6.jpg" class="title-icon">
-        <h1>BY 𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎✨</h1>
-        <div style="margin-left:auto">
-          <button id="logoutBtn" class="logout" style="display:none">Logout</button>
-        </div>
-      </div>
+<h3>INPUT (NAMA + LINK)</h3>
+<textarea id="input" placeholder="Namahttps://link
+Nama2https://link"></textarea>
 
-        <p class="small">
-          KEY <strong><span class="neon-strike">GOD MODS+GRINGO+MK+RUSH+THE KING OFC+YSM+PK</span>         Mohon maaf Saya belum Ristock key jadi sekarang belum bisa get key</strong>.
-          Tekan <em>START</em> untuk generate.
-        </p>
+<h3>NAMA BELAKANG (1 BARIS = 1 DATA)</h3>
+<textarea id="suffixList" placeholder="JOIN TELEGRAM
+FOLLOW AKUN
+SUBSCRIBE
+DOWNLOAD"></textarea>
 
-        <div id="keyDisplay" class="key-display">
-          <div id="keyText"> CLIK START</div>
+<div class="options">
+Spasi:
+<input type="number" id="spaceCount" value="5" min="1">
 
-          <div class="progress-bar" style="width:100%">
-            <div id="progressFill" class="progress-fill" style="width:0%"></div>
-          </div>
-
-          <div id="timeNote" class="note"></div>
-
-          <div style="margin-top:12px" class="note-strong" id="liveExpireNote"></div>
-        </div>
-
-        <div class="controls">
-          <button id="pickBtn">START</button>
-          <button id="copyBtn" class="btn-copy">COPY</button>
-          <button id="shareBtn">SHARE</button>
-          <button id="qrBtn" class="btn-ghost">QR</button>
-        </div>
-
-        <div id="qrArea" style="display:none;margin-top:12px;text-align:center">
-          <img id="qrImg" src="" alt="QR code" style="width:160px;height:160px;border-radius:10px;background:#fff;padding:6px">
-          <div style="margin-top:8px"><a id="qrDownload" class="btn-ghost" download="key-qr.png">Download QR</a></div>
-        </div>
-      </div>
-
-      <div>
-        <label>🎨 Tema</label>
-        <select id="themeSel" onchange="onThemeChange()">
-          <option value="random">Random</option>
-          <option value="0">Neon Green</option>
-          <option value="1">Neon Purple</option>
-          <option value="2">Matrix Green</option>
-          <option value="3">Blue Ice</option>
-          <option value="4">Red Blood</option>
-          <option value="5">Emerald</option>
-          <option value="6">Pink Neon</option>
-          <option value="7">White Neon</option>
-          <option value="8">Deep Blue</option>
-          <option value="9">Galaxy Purple</option>
-          <option value="10">Orange Fire</option>
-          <option value="11">Yellow Neon</option>
-          <option value="12">Green Neon</option>
-          <option value="13">Steel White</option>
-          <option value="14">Metal Chrome</option>
-          <option value="15">𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎</option>
-        </select>
-
-        <label style="margin-top:12px;display:block">📣 Sosial</label>
-        <div class="links">
-          <a href="https://lynk.id/dezzreal" target="_blank">Produk</a>
-          <a href="https://youtube.com/@trioshorts145?si=4sL0IFJR2DZq6DR0" target="_blank">YouTube</a>
-          <a href="https://t.me/addlist/zNLRBwRsPOQ3OTZl" target="_blank">Telegram</a>
-          <a href="https://sociabuzz.com/dezzreal" target="_blank">Sociabuzz</a>
-          <a href="https://whatsapp.com/channel/0029Vb7Gl23EFeXuLGF1yB1G" target="_blank">WhatsApp</a>
-          <a href="https://dezzmodz.github.io/UNBANV1/" target="_blank">UNBAN WAV1</a>
-          <a href="https://dezzmodz.github.io/JOIN//" target="_blank">JOIN CHANEL ME</a>
-        </div>
-
-        <div class="admin-note">𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎....☕ INI ADALAH WEB GET KEY+FIES 
-        KALIAN BISA GET KEY DAN DAPATKAN KEY RANDOM, PIN LOJIN SILHKAN DM (TELEGRAM: @dezzmods/ TIKTOK: @dezz_realmods</div>
-        <div style="position:fixed;top:990px;left:100px;z-index:200;padding:5px 8px;class="admin-note">©WEB RESMI 𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎</div>
-
-      <!-- Musik login -->
-<audio id="loginMusic" loop>
-  <source src="https://files.catbox.moe/0jr72e.mp3" type="audio/mpeg">
-</audio>
-
-<div id="musicPopup" style="
-  position: fixed;
-  bottom: 600px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: rgba(0,0,0,0.85);
-  padding: 14px 22px;
-  border-radius: 12px;
-  color: #00eaff;
-  font-weight: bold;
-  display: none;
-  text-align: center;
-  font-size: 16px;
-  box-shadow: 0 0 15px #F504FF, 0 0 30px #FFEF00;
-  opacity: 0;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-">
-  Musik Dimulai 🎵
+<label>
+<input type="checkbox" id="autoCopy" checked> Auto Copy
+</label>
 </div>
 
+<button onclick="processText()">PROSES</button>
 
-  <!-- LOGIN OVERLAY (neon-glass) -->
-  <div id="loginOverlay" class="login-overlay" style="display:none">
-    <div class="login-card">
-      <div class="login-title">
-        <img src="https://files.catbox.moe/5pf5s6.jpg" class="login-avatar" />
-        <div>
-          <div style="font-weight:800">💫𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎⚡</div>
-          <div class="login-note small">PASSWORD 𝐃𝐌 𝐓𝐈𝐊𝐓𝐎𝐊:@dezz_realmods</div>
-        </div>
-      </div>
-
-      <div style="margin-top:12px">
-        <input id="pinInput" class="glass-input" type="password" placeholder="MASUKAN PASSWORD" />
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button id="pinSubmit" class="btn">LOGIN</button>
-        <button id="pinCancel" class="btn-ghost">Batal</button>
-      </div>
-
-      <div id="loginMsg" class="small" style="color:#ff6b6b;margin-top:8px;display:none"></div>
-    </div>
-  </div>
-
-  <!-- MODAL -->
-  <div id="modalWrap" class="modal-wrap" aria-hidden="true" style="display:none">
-    <div id="modal" class="modal neon-glow">
-      <div class="neon-title" id="modalTitle">GENERATED</div>
-      <div class="modal-key" id="modalKey">-</div>
-      <div class="modal-meta" id="modalMeta">Expired: -</div>
-      <div style="text-align:center;margin-top:12px">
-        <button id="modalClose" class="btn-ghost">Tutup</button>
-        <button id="modalCopy" class="btn">Salin</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- bottom neon clock -->
-  <div id="clockBottom" style="position:fixed;bottom:10px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:12000">
-    <div class="neon-clock" id="clockNeonBottom">--</div>
-  </div>
-
-   <!-- SIMPLE NEON POPUP/TOAST -->
-<div id="toast" class="toast">SAYA... HANYA MENGINGATKAN KALO ADA TEKS BAGIAN KIRI ATAS KEDIP WARNA BIRU BERATI ITU TIDAK TERDAFTAR KEYNYA, KALO TIDAK ADA TEKS CORET SEPERTI ITU BERARTI ITU TERDAFTAR</div>
-<button id="showToastBtn" style="position:fixed;top:398px;left:295px;z-index:200;padding:5px 8px;">PESAN</button>
+<h3>OUTPUT</h3>
+<pre id="output"></pre>
+<div id="status"></div>
 
 <script>
-/* ========== Simple config ========== */
-const VALID_PINS = ["GiveMember","Dezz"];
-const DURATION_SECONDS = 30; // 30 detik
-const KEYS_POOL = [
-  "MAAF COBA ULANG KLICK START",
-  "HOLOGRAM RED     https://sub4unlock.io/nB1t2",
-  "HOLO FF MAX_3D PREM     https://sub4unlock.io/BtDQy",
-  "HOLOGRAM PINK [ KE MMK AELIN ]     https://sub4unlock.io/VE84J",
-  "HOLOGRAM BLUE     https://sub4unlock.io/dgTtr",
-  "HOLOGRAM BLUE TRANSNPARAN     https://sub4unlock.io/Ox01k",
-  "HOLOGRAM GREN     https://sub4unlock.io/c7eUi",
-  "HOLOGRAM ORANGE     https://sub4unlock.io/dYcL3",
-  "HOLOGRAM 3D X DRAG HS     https://sub4unlock.io/c9ezR",
-  "HOLOGRAM YELOW     https://sub4unlock.io/NfB6U",
-  "HOLOGRAM WHITE     https://sub4unlock.io/s7flN",
-  "STAR ULANG 1 X LAGI!!!!",
-  "FLY WUKONG + INVISIBLE WENDING MACHINE + GLO WALL + UNDERWATER META DATA     https://sub4unlock.io/IM6Tg",
-  "STAR ULANG 1 X LAGI!!!!",
-  "AIMLOCK     https://sub4unlock.io/6BTUp", 
-  "AIMDRAG     https://sub4unlock.io/zA2xg", 
-  "BODY LOCK     https://sub4unlock.io/ycbBt", 
-  "FFV7A MAX     https://sub4unlock.io/RrFT5",
-  "ZIY SETTINGS AIMLOCK BODY HS     https://sub4unlock.io/69ZC5", 
-  "HOLOGRAM X DRAG XIT 100% HS     https://sub4unlock.io/GpfB7", 
-  "HEADS AIMFG     https://sub4unlock.io/JuvfhWeBlF", 
-  "DRAG HS PIU V4     https://sub4unlock.io/AwaoB", 
-  "DRAG HS 60% @RAMZY     https://sub4unlock.io/HB8xm", 
-  "BODYLOCK V1 LENQIN     https://sub4unlock.io/T7mMe", 
-  "BADAN HS VVIP     https://sub4unlock.io/OJY35",
-  "STAR ULANG 1 X LAGI!!!!",
-  "STAR ULANG 1 X LAGI!!!!",
-  "AIM SETINGS 99% ALL FF [ OB51 ]     https://sub4unlock.io/4sQfA",
-  "STAR ULANG 1 X LAGI!!!!",
-  "STAR ULANG 1 X LAGI!!!!",
-  "STAR ULANG 1 X LAGI!!!!",
-  "STAR ULANG 1 X LAGI!!!!",
-  "STAR ULANG 1 X LAGI!!!!"
-];
+function processText(){
+  const dataLines   = input.value.split('\n');
+  const prefixLines = prefixList.value.split('\n');
+  const suffixLines = suffixList.value.split('\n');
+  const space = ' '.repeat(+spaceCount.value || 5);
 
+  const results = [];
 
-// Ban settings (device-based)
-const MAX_BAD = 3;              // kesalahan total sebelum "ban device"
-const BAN_DURATION_MS = 5*60*1000; // 5 menit
+  dataLines.forEach((line, i)=>{
+    line = line.replace(/"/g,'').trim();
+    if(!line) return;
 
-/* ========== Elements ========== */
-const loginOverlay = document.getElementById('loginOverlay');
-const pinInput = document.getElementById('pinInput');
-const pinSubmit = document.getElementById('pinSubmit');
-const pinCancel = document.getElementById('pinCancel');
-const loginMsg = document.getElementById('loginMsg');
-const pickBtn = document.getElementById('pickBtn');
-const copyBtn = document.getElementById('copyBtn');
-const shareBtn = document.getElementById('shareBtn');
-const qrBtn = document.getElementById('qrBtn');
-const qrArea = document.getElementById('qrArea');
-const qrImg = document.getElementById('qrImg');
-const qrDownload = document.getElementById('qrDownload');
-const keyText = document.getElementById('keyText');
-const progressFill = document.getElementById('progressFill');
-const timeNote = document.getElementById('timeNote');
-const logoutBtn = document.getElementById('logoutBtn');
-const themeSel = document.getElementById('themeSel');
-const modalWrap = document.getElementById('modalWrap');
-const modal = document.getElementById('modal');
-const modalKey = document.getElementById('modalKey');
-const modalMeta = document.getElementById('modalMeta');
-const modalTitle = document.getElementById('modalTitle');
-const modalClose = document.getElementById('modalClose');
-const modalCopy = document.getElementById('modalCopy');
-const liveExpireNote = document.getElementById('liveExpireNote');
-const clockTop = document.getElementById('clockNeonTop');
-const clockBottom = document.getElementById('clockNeonBottom');
+    const m = line.match(/(.*?)(https?:\/\/\S+)/);
+    if(!m) return;
 
-let lastKey = "";
-let expiryAt = 0;
-let countdownInterval = null;
+    const prefix = (prefixLines[i] || '').trim();
+    const suffix = (suffixLines[i] || '').trim();
 
-/* =========================
-   DEVICE FINGERPRINT (simple, deterministic)
-   ========================= */
-function deviceFingerprint() {
-  // Simple fingerprint using userAgent + screen + timezone
-  const s = navigator.userAgent + '|' + screen.width + 'x' + screen.height + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone;
-  // simple FNV-1a 32-bit
-  let h = 2166136261 >>> 0;
-  for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return 'DZ_' + (h>>>0).toString(16);
-}
+    let content = '';
+    if(prefix) content += prefix + space;
+    content += m[1] + space + m[2];
+    if(suffix) content += space + suffix;
 
-/* =========================
-   BAN / ATTEMPT LOGIC
-   Stored in localStorage as:
-     dezz_bad_{fingerprint} = number
-     dezz_ban_{fingerprint} = timestamp (ms)
-*/
-function getBadKeyName(fp){ return 'dezz_bad_' + fp; }
-function getBanKeyName(fp){ return 'dezz_ban_' + fp; }
+    results.push(`"${content}"`);
+  });
 
-function incrementBad(fp){
-  const k = getBadKeyName(fp);
-  const cur = Number(localStorage.getItem(k) || '0') + 1;
-  localStorage.setItem(k, String(cur));
-  if (cur >= MAX_BAD) {
-    const until = Date.now() + BAN_DURATION_MS;
-    localStorage.setItem(getBanKeyName(fp), String(until));
-    return { banned:true, until };
-  }
-  return { banned:false, count:cur };
-}
+  const outputText = results.map((v,i)=>
+    i < results.length-1 ? v+',' : v
+  ).join('\n');
 
-function isDeviceBanned(fp){
-  const val = localStorage.getItem(getBanKeyName(fp));
-  if(!val) return false;
-  const until = Number(val);
-  if(Date.now() >= until){
-    // expired ban: cleanup
-    localStorage.removeItem(getBanKeyName(fp));
-    localStorage.removeItem(getBadKeyName(fp));
-    return false;
-  }
-  return true;
-}
+  output.textContent = outputText;
 
-function getBanRemainingSeconds(fp){
-  const val = localStorage.getItem(getBanKeyName(fp));
-  if(!val) return 0;
-  return Math.max(0, Math.ceil((Number(val) - Date.now())/1000));
-}
-
-/* =========================
-   AUTH (session-only)
-*/
-function isAuthorized(){ return sessionStorage.getItem('dz_authorized') === '1'; }
-function setAuthorized(flag){
-  if(flag) sessionStorage.setItem('dz_authorized','1'); else sessionStorage.removeItem('dz_authorized');
-  loginOverlay.style.display = flag ? 'none' : 'flex';
-  logoutBtn.style.display = flag ? 'inline-block' : 'none';
-}
-setAuthorized(isAuthorized());
-
-pinSubmit.addEventListener('click', ()=> {
-  const v = (pinInput.value||'').trim();
-  const fp = deviceFingerprint();
-
-  if(isDeviceBanned(fp)){
-    const sec = getBanRemainingSeconds(fp);
-    loginMsg.style.display = 'block';
-    loginMsg.textContent = `Perangkat terbanned. Coba lagi dalam ${sec}s`;
-    return;
-  }
-
-  if(!v){
-    loginMsg.style.display = 'block';
-    loginMsg.textContent='Masukkan PIN';
-    return;
-  }
-
-  if(VALID_PINS.includes(v)){
-    setAuthorized(true);
-    loginMsg.style.display='none';
-    localStorage.removeItem(getBadKeyName(fp));
-
-    const music = document.getElementById('loginMusic');
-const popup = document.getElementById('musicPopup');
-
-function showMusicPopup() {
-  popup.style.display = 'block';
-  setTimeout(() => {
-    popup.style.opacity = '1';
-    popup.style.transform = 'translateX(-50%) translateY(0)';
-  }, 100); // animasi muncul halus
-
-  // otomatis hilang setelah 3 detik
-  setTimeout(() => {
-    popup.style.opacity = '1';
-    popup.style.transform = 'translateX(-50%) translateY(70px)';
-    setTimeout(() => popup.style.display = 'none', 1000); // tunggu animasi hilang
-  }, 3000);
-}
-
-// contoh pemanggilan saat login sukses
-music.play().then(() => {
-  showMusicPopup();
-}).catch(() => {
-  // fallback autoplay gagal
-  popup.textContent = "Klik untuk memulai musik 🎵";
-  popup.style.display = 'block';
-  setTimeout(() => popup.style.display = 'none', 5000);
-});
-  } else {
-    loginMsg.style.display='block';
-    loginMsg.textContent='PIN salah!';
-    pinInput.animate([{ transform: 'translateX(-6px)'},{ transform: 'translateX(6px)'},{ transform: 'translateX(0)' }], { duration: 280, easing:'ease' });
-    const r = incrementBad(fp);
-    if(r.banned){
-      loginMsg.textContent = 'Perangkat dibanned sementara karena terlalu banyak percobaan.';
-    } else {
-      loginMsg.textContent += ` (${r.count}/${MAX_BAD})`;
+  if(outputText){
+    if(autoCopy.checked){
+      navigator.clipboard.writeText(outputText);
     }
-  }
-});  
-pinCancel.addEventListener('click', ()=>{ loginOverlay.style.display='none'; });
-logoutBtn.addEventListener('click', ()=> setAuthorized(false));
-
-/* =========================
-   THEMES
-*/
-const THEMES = [
-  { bg1:'#0b1116', bg2:'#0f1a21', accent:'#7dff7d' },   // neon green
-  { bg1:'#0b0716', bg2:'#220f3b', accent:'#b47dff' },   // neon purple
-  { bg1:'#001100', bg2:'#052005', accent:'#4bff4b' },   // matrix green
-  { bg1:'#071029', bg2:'#042033', accent:'#78d7ff' },   // blue ice
-  { bg1:'#2a0808', bg2:'#3a0e0f', accent:'#ff6b6b' },   // red blood
-  { bg1:'#0a1a0f', bg2:'#072117', accent:'#7df0c4' },   // emerald
-  { bg1:'#1b071a', bg2:'#0b0f2e', accent:'#ff78d7' },   // pink neon
-  { bg1:'#000000', bg2:'#171717', accent:'#ffffff' },   // white neon
-  { bg1:'#001f3f', bg2:'#003366', accent:'#00a8ff' },   // deep blue
-  { bg1:'#2d033b', bg2:'#810ca8', accent:'#f2f7a1' },   // galaxy purple
-  { bg1:'#082032', bg2:'#2c394b', accent:'#ff4c29' },   // orange fire
-  { bg1:'#142f43', bg2:'#1d566e', accent:'#facf5a' },   // yellow neon
-  { bg1:'#0b5345', bg2:'#145a32', accent:'#52ff81' },   // green neon
-  { bg1:'#0d1b2a', bg2:'#1b263b', accent:'#e0e1dd' },   // steel white
-  { bg1:'#232526', bg2:'#414345', accent:'#cfcfcf' },   // metal chrome
-  { bg1:'#F21AFF', bg2:'#3CFFD9', accent:'#64FF35' },   // 𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎
-];
-
-function applyTheme(theme){
-  document.body.style.background = `linear-gradient(135deg, ${theme.bg1}, ${theme.bg2})`;
-  document.documentElement.style.setProperty('--accent', theme.accent);
-  localStorage.setItem('dezz_theme_index', String(THEMES.indexOf(theme)));
-}
-
-function randomTheme(){
-  const t = THEMES[Math.floor(Math.random()*THEMES.length)];
-  applyTheme(t);
-}
-
-function onThemeChange(){
-  const sel = document.getElementById('themeSel').value;
-  if(sel === 'random'){ randomTheme(); return; }
-  const idx = parseInt(sel,10);
-  if(!isNaN(idx) && THEMES[idx]) applyTheme(THEMES[idx]);
-}
-
-window.addEventListener('load', ()=>{
-  const idx = Number(localStorage.getItem('dezz_theme_index'));
-  if(!isNaN(idx) && THEMES[idx]) applyTheme(THEMES[idx]); else randomTheme();
-});
-
-/* =========================
-   EXPIRY / UI helpers
-*/
-function formatTimeLeft(sec){
-  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
-  if(h>0) return `${h}h ${m}m ${s}s`;
-  if(m>0) return `${m}m ${s}s`;
-  return `${s}s`;
-}
-
-/* ========== Expiry / countdown handling ========== */
-function startLocalExpiry(seconds){
-  // clear existing
-  if(countdownInterval) clearInterval(countdownInterval);
-  expiryAt = Date.now() + seconds*1000;
-  // show button blinking
-  copyBtn.classList.add('blink');
-  copyBtn.classList.remove('disabled');
-
-  countdownInterval = setInterval(()=>{
-    const leftMs = expiryAt - Date.now();
-    if(leftMs <= 0){
-      clearInterval(countdownInterval);
-      expireKeyNow();
-      return;
-    }
-    const sec = Math.floor(leftMs/1000);
-    timeNote.textContent = `Sisa waktu: ${formatTimeLeft(sec)}`;
-    liveExpireNote.textContent = `aktif sampai: ${new Date(expiryAt).toLocaleString()}`;
-  }, 250); // more responsive
-}
-
-function expireKeyNow(){
-  lastKey = "";
-  expiryAt = 0;
-  keyText.textContent = 'KEY EXPIRED';
-  timeNote.textContent = 'Key expired.';
-  liveExpireNote.textContent = '';
-  progressFill.style.width = '0%';
-  copyBtn.classList.remove('blink');
-  copyBtn.classList.add('disabled');
-  pickBtn.disabled = false;
-  // close modal if open
-  if(modal.classList.contains('show')){
-    modal.classList.remove('show');
-    setTimeout(()=> modalWrap.style.display='none',240);
-  }
-  // small pulse to show expired
-  keyText.animate([{opacity:1},{opacity:0.4},{opacity:1}],{duration:460});
-}
-
-function formatTimeLeft(sec){
-  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
-  if(h>0) return `${h}h ${m}m ${s}s`;
-  if(m>0) return `${m}m ${s}s`;
-  return `${s}s`;
-}
-
-/* ========== Generate flow ========== */
-async function showGenerateProgressAndReveal(){
-  progressFill.style.transition = 'width 400ms linear';
-  progressFill.style.width = '20%';
-  keyText.textContent = 'GENERATING…';
-  timeNote.textContent = 'Memproses...';
-  const steps = [1,2,3,4,5,10,15,20,25,30,40,50,60,75,80,90,100];
-  for(let i=0;i<steps.length;i++){
-    await new Promise(r=>setTimeout(r, 300 + Math.random()*260));
-    progressFill.style.width = steps[i] + '%';
-  }
-  await new Promise(r=>setTimeout(r, 280));
-  pickBtn.disabled = false;
-  revealKeyModal();
-}
-
-function revealKeyModal(){
-  const expiresAt = new Date(Date.now() + DURATION_SECONDS*1000);
-  modalKey.textContent = lastKey || 'UNKNOWN';
-  modalMeta.textContent = `Expired: ${expiresAt.getFullYear()}-${String(expiresAt.getMonth()+1).padStart(2,'0')}-${String(expiresAt.getDate()).padStart(2,'0')} ${String(expiresAt.getHours()).padStart(2,'0')}:${String(expiresAt.getMinutes()).padStart(2,'0')}`;
-  modalTitle.textContent = 'HASIL GENERATED';
-  modalWrap.style.display = 'flex';
-  setTimeout(()=> modal.classList.add('show'), 20);
-  modalWrap.setAttribute('aria-hidden','false');
-  startLocalExpiry(DURATION_SECONDS);
-}
-
-/* pick random key */
-pickBtn.addEventListener('click', ()=>{
-  const fp = deviceFingerprint();
-  if(isDeviceBanned(fp)){
-    const sec = getBanRemainingSeconds(fp);
-    alert(`Perangkat terbanned. Coba lagi dalam ${sec}s`);
-    return;
-  }
-  if(!isAuthorized()){
-    loginOverlay.style.display = 'flex'; loginMsg.style.display='none'; pinInput.value=''; pinInput.focus(); return;
-  }
-  pickBtn.disabled = true;
-  const idx = Math.floor(Math.random()*KEYS_POOL.length);
-  lastKey = KEYS_POOL[idx];
-  keyText.textContent = lastKey;
-  timeNote.textContent = '';
-  progressFill.style.width = '3%';
-  showGenerateProgressAndReveal();
-  // save history
-  let h = JSON.parse(localStorage.getItem('dezz_history') || '[]');
-  h.unshift(lastKey); h = [...new Set(h)]; localStorage.setItem('dezz_history', JSON.stringify(h.slice(0,40)));
-  historyList.textContent = h.length ? h.slice(0,1).join(' · ') : '—';
-});
-
-/* copy button */
-copyBtn.addEventListener('click', async ()=>{
-  if(!lastKey) return alert('Tidak ada key untuk disalin!');
-  try{
-    await navigator.clipboard.writeText(lastKey);
-    copyBtn.animate([{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],{duration:220});
-    const prev = copyBtn.textContent;
-    copyBtn.textContent = 'COPIED';
-    setTimeout(()=> copyBtn.textContent = prev, 900);
-  } catch(e){ alert('Gagal salin.'); }
-});
-
-/* share & qr */
-shareBtn.addEventListener('click', async ()=>{
-  if(!lastKey) return alert('Tidak ada key untuk dibagikan!');
-  if(navigator.share){ try{ await navigator.share({text:lastKey}); }catch(e){} } else alert('Share tidak didukung di browser ini.');
-});
-qrBtn.addEventListener('click', ()=>{
-  if(!lastKey) return alert('Tidak ada key untuk QR!');
-  const url = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(lastKey);
-  qrImg.src = url; qrDownload.href = url; qrArea.style.display = 'block';
-});
-
-/* modal controls */
-modalClose.addEventListener('click', ()=>{ modal.classList.remove('show'); setTimeout(()=> modalWrap.style.display='none',240); });
-modalCopy.addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(modalKey.textContent); alert('✔ Key disalin!'); }catch(e){ alert('Gagal salin.'); }});
-
-/* =========================
-   CLOCKS
-*/
-function updateClocks(){
-  const now = new Date();
-  const d = String(now.getDate()).padStart(2,'0');
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const y = now.getFullYear();
-  const hh = String(now.getHours()).padStart(2,'0');
-  const mm = String(now.getMinutes()).padStart(2,'0');
-  const ss = String(now.getSeconds()).padStart(2,'0');
-  clockTop.textContent = `${d}-${m}-${y} | ${hh}:${mm}:${ss}`;
-  clockBottom.textContent = `${d}-${m}-${y} | ${hh}:${mm}:${ss}`;
-}
-setInterval(updateClocks,1000);
-updateClocks();
-
-/* =========================
-   INITIAL STATE & BAN CHECK
-*/
-function init(){
-  // copy button disabled initially
-  copyBtn.classList.add('disabled');
-
-  // If device banned -> show overlay message and disable important buttons
-  const fp = deviceFingerprint();
-  if(isDeviceBanned(fp)){
-    const sec = getBanRemainingSeconds(fp);
-    // Disable UI
-    pickBtn.disabled = true;
-    copyBtn.classList.add('disabled');
-    loginOverlay.style.display = 'none';
-    alert(`Perangkat Anda terbanned sementara. Coba lagi dalam ${sec} detik`);
-  } else {
-    // Open login overlay if not authorized
-    if(!isAuthorized()) loginOverlay.style.display = 'flex';
+    status.textContent = `✔ ${results.length} data diformat`;
+  }else{
+    status.textContent = '';
   }
 }
-init();
-
-/* =========================
-   Optional: simple checkKey UI (if you previously had one)
-   Provide a small checker if user wants to paste key and verify against pool (not required).
-*/
-function checkKeyAgainstPool(value){
-  return KEYS_POOL.includes(value);
-}
-
-/* Expose few helpers to console for debugging (optional) */
-window.DEZZ = {
-  fp: deviceFingerprint(),
-  isBanned: () => isDeviceBanned(deviceFingerprint()),
-  banRemaining: () => getBanRemainingSeconds(deviceFingerprint()),
-  unban: () => { localStorage.removeItem(getBanKeyName(deviceFingerprint())); localStorage.removeItem(getBadKeyName(deviceFingerprint())); alert('Unbanned locally'); }
-}
-
-const toast = document.getElementById('toast');
-const showToastBtn = document.getElementById('showToastBtn');
-
-showToastBtn.addEventListener('click', ()=>{
-  toast.classList.add('show');
-  setTimeout(()=> toast.classList.remove('show'), 5000); // popup hilang setelah 5 detik
-});
-
 </script>
+
 </body>
 </html>
