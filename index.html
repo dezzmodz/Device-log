@@ -2,128 +2,108 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Formatter Nama & Link</title>
-
+<title>ADMIN PANEL – DezzXMods</title>
 <style>
 body{
-  background:#0b0b0b;
-  color:#00ffcc;
-  font-family:Arial, sans-serif;
+  background:#050a08;
+  color:#7dffb2;
+  font-family:monospace;
   padding:20px;
 }
-textarea, input{
-  width:100%;
-  background:#111;
-  color:#0f0;
-  border:1px solid #00ffcc;
-  padding:8px;
-  font-size:14px;
-  margin-top:6px;
+.card{
+  max-width:420px;
+  margin:auto;
+  background:rgba(0,0,0,.7);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 0 25px rgba(0,255,150,.4);
 }
-textarea{height:120px;}
 button{
-  margin-top:12px;
-  padding:10px 20px;
-  background:#00ffcc;
-  color:#000;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
-}
-pre{
-  margin-top:15px;
-  background:#111;
-  color:#0f0;
+  width:100%;
   padding:10px;
-  min-height:120px;
-  white-space:pre-wrap;
-}
-.options{
   margin-top:10px;
-  font-size:13px;
+  border-radius:8px;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
 }
-#status{
-  margin-top:8px;
-  font-size:12px;
-  opacity:.7;
-}
+button{background:#7dffb2;color:#000}
+button.danger{background:#ff5c5c}
+h2{text-align:center}
+#log{margin-top:12px;font-size:13px}
 </style>
 </head>
-
 <body>
 
-<h3>NAMA DEPAN (1 BARIS = 1 DATA)</h3>
-<textarea id="prefixList" placeholder="VIP
-ADMIN
-MEMBER
-OWNER"></textarea>
+<script>
+/* 🔐 ADMIN PIN */
+const ADMIN_PIN = "Dezz";
+const pin = prompt("ADMIN PIN:");
+if(pin !== ADMIN_PIN){
+  document.body.innerHTML = "";
+  alert("AKSES DITOLAK");
+  throw new Error("NO ACCESS");
+}
+</script>
 
-<h3>INPUT (NAMA + LINK)</h3>
-<textarea id="input" placeholder="Namahttps://link
-Nama2https://link"></textarea>
+<div class="card">
+<h2>🔐 ADMIN PANEL</h2>
 
-<h3>NAMA BELAKANG (1 BARIS = 1 DATA)</h3>
-<textarea id="suffixList" placeholder="JOIN TELEGRAM
-FOLLOW AKUN
-SUBSCRIBE
-DOWNLOAD"></textarea>
+<button onclick="resetTrial()">RESET TRIAL LOGIN</button>
+<button onclick="unlock()">UNLOCK GENERATE</button>
+<button class="danger" onclick="wipe()">WIPE DEVICE</button>
 
-<div class="options">
-Spasi:
-<input type="number" id="spaceCount" value="5" min="1">
-
-<label>
-<input type="checkbox" id="autoCopy" checked> Auto Copy
-</label>
+<div id="log"></div>
 </div>
 
-<button onclick="processText()">PROSES</button>
-
-<h3>OUTPUT</h3>
-<pre id="output"></pre>
-<div id="status"></div>
-
 <script>
-function processText(){
-  const dataLines   = input.value.split('\n');
-  const prefixLines = prefixList.value.split('\n');
-  const suffixLines = suffixList.value.split('\n');
-  const space = ' '.repeat(+spaceCount.value || 5);
+/* ======================
+   DEVICE FINGERPRINT
+====================== */
+function deviceFingerprint(){
+  const s =
+    navigator.userAgent + "|" +
+    screen.width + "x" + screen.height + "|" +
+    Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const results = [];
-
-  dataLines.forEach((line, i)=>{
-    line = line.replace(/"/g,'').trim();
-    if(!line) return;
-
-    const m = line.match(/(.*?)(https?:\/\/\S+)/);
-    if(!m) return;
-
-    const prefix = (prefixLines[i] || '').trim();
-    const suffix = (suffixLines[i] || '').trim();
-
-    let content = '';
-    if(prefix) content += prefix + space;
-    content += m[1] + space + m[2];
-    if(suffix) content += space + suffix;
-
-    results.push(`"${content}"`);
-  });
-
-  const outputText = results.map((v,i)=>
-    i < results.length-1 ? v+',' : v
-  ).join('\n');
-
-  output.textContent = outputText;
-
-  if(outputText){
-    if(autoCopy.checked){
-      navigator.clipboard.writeText(outputText);
-    }
-    status.textContent = `✔ ${results.length} data diformat`;
-  }else{
-    status.textContent = '';
+  let h = 2166136261 >>> 0;
+  for(let i=0;i<s.length;i++){
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h,16777619);
   }
+  return "DZ_" + (h>>>0).toString(16);
+}
+
+function trialKey(fp){ return "dz_trial_login_" + fp }
+function genKey(fp){ return "dz_gen_count_" + fp }
+
+/* ======================
+   ADMIN ACTIONS
+====================== */
+function resetTrial(){
+  const fp = deviceFingerprint();
+  localStorage.removeItem(trialKey(fp));
+  log("Trial login di-reset");
+}
+
+function unlock(){
+  const fp = deviceFingerprint();
+  localStorage.removeItem(genKey(fp));
+  log("Generate di-unlock");
+}
+
+function wipe(){
+  const fp = deviceFingerprint();
+  localStorage.removeItem(trialKey(fp));
+  localStorage.removeItem(genKey(fp));
+  localStorage.removeItem("dezz_bad_"+fp);
+  localStorage.removeItem("dezz_ban_"+fp);
+  log("Semua data device dibersihkan");
+}
+
+function log(msg){
+  document.getElementById("log").innerHTML =
+    "✔️ " + msg;
 }
 </script>
 
