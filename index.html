@@ -867,51 +867,6 @@ body::before{
   text-shadow:0 0 8px rgba(125,255,125,0.8);
 }
 
-/* ===============================
-   VIDEO PRE-LOGIN
-================================ */
-.video-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.video-overlay video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: fadeInVideo 5s ease forwards;
-}
-
-/* fade out overlay ketika video selesai */
-@keyframes fadeOutVideo {
-  0% { opacity: 1; }
-  100% { opacity: 0; display: none; }
-  
-  @keyframes fadeInVideo {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* login overlay */
-.login-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 11000;
-  background: rgba(0,0,0,0.6);
-  font-family: 'Orbitron', sans-serif;
-}
-.video-overlay.fade-out {
-  animation: fadeOutVideo 1s forwards;
-}
-
 </style>
 </head>
 <body>
@@ -1159,14 +1114,6 @@ audio.src = loginMusics[randomIndex];
   Musik Dimulai 🎵
 </div>
 
-<!-- VIDEO PRE-LOGIN -->
-<div class="video-overlay" id="videoOverlay">
-  <video autoplay playsinline id="preLoginVideo">
-    <source src="https://files.catbox.moe/dmftc7.mp4" type="video/mp4">
-    Your browser does not support HTML5 video.
-  </video>
-</div>
-
   <!-- LOGIN OVERLAY (neon-glass) -->
   <div id="loginOverlay" class="login-overlay" style="display:none">
     <div class="login-card">
@@ -1228,7 +1175,7 @@ const KEYS_POOL = [
 "HeadsensiFreeV2        https://sfl.gl/4WJrvy    Pw:headsensiv2",
 "WALLHACK_TRAINING_SOCIAL_ISLAND        https://sfl.gl/3ylhocx",
 "HOLO_ORANGE        https://sfl.gl/CwU4", 
-"𝙃𝙊𝙇𝙊𝙁𝙧𝙚𝙚𝙑2-𝘽𝙮𝙙𝙚𝙯𝙯        https://sfl.gl/EeGr",
+"𝙃𝙊𝙇𝙊??𝙧𝙚𝙚𝙑2-𝘽𝙮𝙙𝙚𝙯𝙯        https://sfl.gl/EeGr",
 "𝙃𝙊𝙇𝙊𝙁𝙧𝙚𝙚𝙑1-𝘽𝙮𝙙𝙚𝙯𝙯        https://sfl.gl/aMzLp62I"
 ];
 
@@ -1741,21 +1688,6 @@ showToastBtn.addEventListener('click', ()=>{
   toast.classList.add('show');
   setTimeout(()=> toast.classList.remove('show'), 5000); // popup hilang setelah 5 detik
 });
-const video = document.getElementById('preLoginVideo');
-const videoOverlay = document.getElementById('videoOverlay');
-const loginOverlay = document.getElementById('loginOverlay');
-const loginSound = document.getElementById('loginSound');
-
-// Setelah video selesai
-video.onended = () => {
-  videoOverlay.style.display = 'none';
-  loginOverlay.style.display = 'flex';
-  
-  // putar suara login (minimal ada audio)
-  loginSound.play().catch(()=>{
-    console.log("Klik user dulu untuk memutar audio di browser mobile");
-  });
-};
 </script>
 </body>
 </html>
