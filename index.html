@@ -71,10 +71,92 @@ button{
   color:#00ffcc;
   font-weight:bold;
 }
+/* OVERLAY */
+#loginOverlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.login-box{
+  background:#111;
+  padding:25px;
+  border-radius:16px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 15px 35px rgba(0,0,0,.5);
+}
+
+.login-box h2{
+  margin-bottom:10px;
+}
+
+.login-box p{
+  font-size:13px;
+  color:#aaa;
+}
+
+.login-box input{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  font-size:14px;
+}
+
+.login-box button{
+  width:100%;
+  margin-top:15px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#00ffcc;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.footer{
+  margin-top:15px;
+  font-size:11px;
+  color:#666;
+}
 </style>
 </head>
 
 <body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <h2>🔐 LOGIN ACCESS</h2>
+    <p>Masukkan Username & Password</p>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">LOGIN</button>
+
+    <div class="footer">
+      © 2026 DezzXMods
+    </div>
+  </div>
+</div>
+
+<!-- ISI HALAMAN -->
+<div style="padding:40px;text-align:center;">
+  <h1>WELCOME</h1>
+  <p>Konten ini terkunci sebelum login.</p>
+</div>
 
 <div class="container">
   <h2> GET PASSWORD ACCESS</h2>
@@ -106,6 +188,27 @@ button{
 </div>
 
 <script>
+// GANTI LOGIN DI SINI
+const USERNAME = "Dezz";
+const PASSWORD = "Dezz1";
+const LOGIN_KEY = "3";
+
+// AUTO LOGIN JIKA SUDAH PERNAH LOGIN
+if(localStorage.getItem(LOGIN_KEY)){
+  document.getElementById("loginOverlay").style.display = "none";
+}
+
+function login(){
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+
+  if(u === USERNAME && p === PASSWORD){
+    localStorage.setItem(LOGIN_KEY, "true");
+    document.getElementById("loginOverlay").style.display = "none";
+  }else{
+    alert("Username atau Password salah!");
+  }
+}
 // ============================
 // DAFTAR KEY PER KATEGORI
 // ============================
