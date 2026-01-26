@@ -1,341 +1,367 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>Get Password - DezzXMods</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+<meta charset="UTF-8">  
+<title>Get Password - DezzXMods</title>  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <style>  
+body{  
+  margin:0;  
+  font-family:Arial, Helvetica, sans-serif;  
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);  
+  color:#fff;  
+}  
+.container{  
+  max-width:420px;  
+  margin:60px auto;  
+  background:rgba(0,0,0,0.55);  
+  padding:25px;  
+  border-radius:18px;  
+  text-align:center;  
+}  
+select{  
+  width:100%;  
+  padding:12px;  
+  border-radius:10px;  
+  border:none;  
+  margin-top:10px;  
+  font-size:14px;  
+}  
+.key-box{  
+  margin:18px 0;  
+  background:#111;  
+  border:1px dashed #00ffcc;  
+  border-radius:12px;  
+  padding:14px;  
+  font-size:15px;  
+  word-break:break-all;  
+}  
+button{  
+  width:100%;  
+  padding:14px;  
+  border:none;  
+  border-radius:12px;  
+  font-size:15px;  
+  font-weight:bold;  
+  cursor:pointer;  
+}  
+.get{  
+  background:#00ffcc;  
+  color:#000;  
+}  
+.get:disabled{  
+  background:#555;  
+  color:#ccc;  
+  cursor:not-allowed;  
+}  
+.copy{  
+  margin-top:10px;  
+  background:#222;  
+  color:#00ffcc;  
+  border:1px solid #00ffcc;  
+}  
+.footer{  
+  margin-top:20px;  
+  font-size:12px;  
+  color:#bbb;  
+  opacity:0.85;  
+}  
+.footer span{  
+  color:#00ffcc;  
+  font-weight:bold;  
+}  
+/* OVERLAY */  
+#loginOverlay{  
+  position:fixed;  
+  top:0;  
+  left:0;  
+  width:100%;  
+  height:100%;  
+  background:rgba(0,0,0,0.75);  
+  backdrop-filter:blur(8px);  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  z-index:9999;  
+}  
+  
+.login-box{  
+  background:#111;  
+  padding:25px;  
+  border-radius:16px;  
+  width:320px;  
+  text-align:center;  
+  box-shadow:0 15px 35px rgba(0,0,0,.5);  
+}  
+  
+.login-box h2{  
+  margin-bottom:10px;  
+}  
+  
+.login-box p{  
+  font-size:13px;  
+  color:#aaa;  
+}  
+  
+.login-box input{  
+  width:100%;  
+  padding:12px;  
+  margin-top:10px;  
+  border:none;  
+  border-radius:10px;  
+  font-size:14px;  
+}  
+  
+.login-box button{  
+  width:100%;  
+  margin-top:15px;  
+  padding:12px;  
+  border:none;  
+  border-radius:10px;  
+  background:#00ffcc;  
+  color:#000;  
+  font-weight:bold;  
+  cursor:pointer;  
+}  
+  
+.footer{  
+  margin-top:15px;  
+  font-size:11px;  
+  color:#666;  
+}  
+</style>  </head>  <body>  <!-- LOGIN OVERLAY -->  <div id="loginOverlay">  
+  <div class="login-box">  
+    <h2>🔐 LOGIN ACCESS</h2>  
+    <p>Masukkan Username & Password</p>  <input type="text" id="username" placeholder="Username">  
+<input type="password" id="password" placeholder="Password">  
 
-<style>
-body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#fff;
-}
-.container{
-  max-width:420px;
-  margin:60px auto;
-  background:rgba(0,0,0,0.55);
-  padding:25px;
-  border-radius:18px;
-  text-align:center;
-}
-select{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  margin-top:10px;
-  font-size:14px;
-}
-.key-box{
-  margin:18px 0;
-  background:#111;
-  border:1px dashed #00ffcc;
-  border-radius:12px;
-  padding:14px;
-  font-size:15px;
-  word-break:break-all;
-}
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
-}
-.get{
-  background:#00ffcc;
-  color:#000;
-}
-.get:disabled{
-  background:#555;
-  color:#ccc;
-  cursor:not-allowed;
-}
-.copy{
-  margin-top:10px;
-  background:#222;
-  color:#00ffcc;
-  border:1px solid #00ffcc;
-}
-.footer{
-  margin-top:20px;
-  font-size:12px;
-  color:#bbb;
-  opacity:0.85;
-}
-.footer span{
-  color:#00ffcc;
-  font-weight:bold;
-}
-/* OVERLAY */
-#loginOverlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(8px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
+<button onclick="login()">LOGIN</button>  
 
-.login-box{
-  background:#111;
-  padding:25px;
-  border-radius:16px;
-  width:320px;
-  text-align:center;
-  box-shadow:0 15px 35px rgba(0,0,0,.5);
-}
-
-.login-box h2{
-  margin-bottom:10px;
-}
-
-.login-box p{
-  font-size:13px;
-  color:#aaa;
-}
-
-.login-box input{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  font-size:14px;
-}
-
-.login-box button{
-  width:100%;
-  margin-top:15px;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#00ffcc;
-  color:#000;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.footer{
-  margin-top:15px;
-  font-size:11px;
-  color:#666;
-}
-</style>
-</head>
-
-<body>
-
-<!-- LOGIN OVERLAY -->
-<div id="loginOverlay">
-  <div class="login-box">
-    <h2>🔐 LOGIN ACCESS</h2>
-    <p>Masukkan Username & Password</p>
-
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-
-    <button onclick="login()">LOGIN</button>
-
-    <div class="footer">
-      © 2026 DezzXMods
-    </div>
-  </div>
+<div class="footer">  
+  © 2026 DezzXMods  
 </div>
 
-<!-- ISI HALAMAN -->
-<div style="padding:40px;text-align:center;">
-  <h1>WELCOME</h1>
-  <p>Konten ini terkunci sebelum login.</p>
-</div>
+  </div>  
+</div>  <!-- ISI HALAMAN -->  <div style="padding:40px;text-align:center;">  
+  <h1>WELCOME</h1>  
+  <p>Konten ini terkunci sebelum login.</p>  
+</div>  <div class="container">  
+  <h2> GET PASSWORD ACCESS</h2>  
+<div class="footer">  
+  © 2026 <span>DezzXMods</span><br>  
+  Owner: @dezzreal1  
+</div>  
+  <!-- MENU KEY -->  
+  <select id="keyType">  
+    <option value="">--  PILIH MENU PASSWORD  --</option>  
+    <option value="1">1. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙍𝙚𝙙🔴 </option>  
+    <option value="2">2. HOLOGRAM GREEN 🟢 </option>  
+    <option value="3">3. HACK KARAKTER</option>  
+    <option value="4">4. HOLOGRAM 🔴 RED #BY-DEZZ</option>  
+    <option value="5">5. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙊𝙧𝙖𝙣𝙮𝙚 🟠</option>  
+    <option value="6">6. HOLO SENJATA BLUE 🔵</option>  
+    <option value="7">7. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙋𝙪𝙧𝙥𝙡𝙚 🟣</option>  
+    <option value="8">8. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙔𝙚𝙡𝙡𝙤𝙬 🟡</option>  
+    <option value="9">9. HOLOGRAM White ⚪ ☠️ MODE EXTREME</option>  
+    <option value="10">10. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 🟢 HIJAU TOXIC</option>  
+    <option value="11">11. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  BlueXPurple🔵X🟣</option>  
+    <option value="12">12. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  GreenXBlue 🟢x🔵</option>  
+    <option value="13">13. HOLOGRAM GREEN X GLOW TRANS</option>  
+    <option value="14">14. HOLOGRAM RED X GLOW TRANS</option>  
+    <option value="15">15. HOLOGRAM YELLOW X GLOW TRANS</option>  
+    <option value="16">16. HOLOGRAM ORANGYE X GLOW TRANS</option>  
+    <option value="17">17. HOLOGRAM PUTIH X GLOW TRANS</option>  
+    <option value="18">18. HOLOGRAM PURPLE X GLOW TRANS</option>  
+    <option value="19">19. HOLOGRAM BlUE X GLOW TRANS</option>    </select>    <div class="key-box" id="keyBox">  
+    BELUM ADA PASSWORD  
+  </div>  <button class="get" id="getBtn" onclick="getKey()">GET PASSWORD</button>
+<button class="copy" onclick="copyKey()">COPY PASSWORD</button>
 
-<div class="container">
-  <h2> GET PASSWORD ACCESS</h2>
-<div class="footer">
-  © 2026 <span>DezzXMods</span><br>
-  Owner: @dezzreal1
-</div>
-  <!-- MENU KEY -->
-  <select id="keyType">
-    <option value="">--  PILIH MENU PASSWORD  --</option>
-    <option value="1">1. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙍𝙚𝙙🔴 </option>
-    <option value="2">2. HOLOGRAM GREEN 🟢 </option>
-    <option value="3">3. HACK KARAKTER</option>
-    <option value="4">4. HOLOGRAM 🔴 RED #BY-DEZZ</option>
-    <option value="5">5. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙊𝙧𝙖𝙣𝙮𝙚 🟠</option>
-    <option value="6">6. HOLO SENJATA BLUE 🔵</option>
-    <option value="7">7. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙋𝙪𝙧𝙥𝙡𝙚 🟣</option>
-    <option value="8">8. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙔𝙚𝙡𝙡𝙤𝙬 🟡</option>
-    <option value="9">9. HOLOGRAM White ⚪ ☠️ MODE EXTREME</option>
-    <option value="10">10. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 🟢 HIJAU TOXIC</option>
-    <option value="11">11. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  BlueXPurple🔵X🟣</option>
-    <option value="12">12. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  GreenXBlue 🟢x🔵</option>
-    <option value="13">13. HOLOGRAM GREEN X GLOW TRANS</option>
-    <option value="14">14. HOLOGRAM RED X GLOW TRANS</option>
-    <option value="15">15. HOLOGRAM YELLOW X GLOW TRANS</option>
-    <option value="16">16. HOLOGRAM ORANGYE X GLOW TRANS</option>
-    <option value="17">17. HOLOGRAM PUTIH X GLOW TRANS</option>
-    <option value="18">18. HOLOGRAM PURPLE X GLOW TRANS</option>
-    <option value="19">19. HOLOGRAM BlUE X GLOW TRANS</option>
-    
-  </select>
+<div style="margin-top:18px;font-size:12px;color:#aaa;">  
+  © 2026 DezzXMods • All Rights Reserved<br>1x 𝙋𝙖𝙠𝙖𝙞, UPDATE SETIAP HARI  
+</div>  
 
-  <div class="key-box" id="keyBox">
-    BELUM ADA PASSWORD
-  </div>
+<script>  
+const LOGIN_PREFIX = "LOGIN_USED_";
 
-  <button class="get" id="getBtn" onclick="getKey()">GET PASSWORD</button>
-  <button class="copy" onclick="copyKey()">COPY PASSWORD</button>
-<div style="margin-top:18px;font-size:12px;color:#aaa;">
-  © 2026 DezzXMods • All Rights Reserved<br>1x 𝙋𝙖𝙠𝙖𝙞, UPDATE SETIAP HARI
-</div>
+// GANTI LOGIN DI SINI  
+const USERS = [
+  { user: "29HBD", pass: "HBD" }, 
+  { user: "BUY", pass: "BUY1" }, 
+  { user: "BUY", pass: "BUY2" }, 
+  { user: "BUY", pass: "BUY3" }, 
+  { user: "BUY", pass: "10k" }, 
+  { user: "BUY", pass: "Dezz883P19K" }, 
+  { user: "BUY1", pass: "Dezz629Y19K" }, 
+  { user: "BUY", pass: "Dezz" }, 
+  { user: "BUY", pass: "1441" }, 
+  { user: "BUY", pass: "DezzSMSU10K" }, 
+  { user: "Free", pass: "1xPakai" }, 
+];
 
-<script>
-// GANTI LOGIN DI SINI
-const USERNAME = "GET4";
-const PASSWORD = "Dezz4";
-const LOGIN_KEY = "4";
+const LOGIN_KEY = "5"; 
+  
+// AUTO LOGIN JIKA SUDAH PERNAH LOGIN  
+function login(){
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
 
-// AUTO LOGIN JIKA SUDAH PERNAH LOGIN
-if(localStorage.getItem(LOGIN_KEY)){
+  if(!u || !p){
+    alert("Username & Password wajib diisi!");
+    return;
+  }
+
+  const valid = USERS.some(acc => acc.user === u && acc.pass === p);
+  if(!valid){
+    alert("Username atau Password salah!");
+    return;
+  }
+
+  const loginID = LOGIN_PREFIX + u + "_" + p;
+
+  // CEK SUDAH PERNAH LOGIN DENGAN USER+PASS INI
+  if(localStorage.getItem(loginID)){
+    alert("❌ Akun ini sudah dipakai & tidak bisa login lagi!");
+    return;
+  }
+
+  // SIMPAN LOGIN 1X
+  localStorage.setItem(loginID, "USED");
+  localStorage.setItem("CURRENT_LOGIN", loginID);
+
   document.getElementById("loginOverlay").style.display = "none";
 }
-
-function login(){
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
-
-  if(u === USERNAME && p === PASSWORD){
-    localStorage.setItem(LOGIN_KEY, "true");
-    document.getElementById("loginOverlay").style.display = "none";
-  }else{
-    alert("Username atau Password salah!");
-  }
+// ============================  
+// DAFTAR KEY PER KATEGORI  
+// ============================  
+const KEYS = {  
+  1: [  
+    "RedHolo_10KDX"  
+  ],  
+  2: [  
+    "DezzXmodz_HG10K"  
+  ],  
+  3: [  
+    "AbcdezZXMODS"  
+  ],   
+  4: [  
+    "TIMODSDEZZ"  
+  ],  
+  5: [  
+    "HoloEmber10"  
+  ],  
+  6: [  
+    "JANGANLUPABUY"  
+  ],  
+  7: [  
+    "PurpleVoid10"  
+  ],  
+  8: [  
+    "YellowFlux_K10"  
+  ],   
+  9: [  
+    "Dezz-HMJHQU-10K"  
+  ],  
+ 10: [  
+    "Dezz-5YWX4X-10K"  
+  ],   
+ 11: [  
+    "Dezz-XGTVEJ-10K"  
+ ],   
+ 12: [  
+    "Dezz-SZKSLB-10K"  
+   ],  
+ 13: [  
+    "Dezz-LX6GN5-10K"  
+   ],   
+ 14: [  
+    "Dezz-4VFU2C-10K"  
+    ],   
+ 15: [  
+    "Dezz-M3D928-10K"  
+   ],   
+ 16: [  
+    "Dezz-QQ98G7-10K"  
+   ],   
+ 17: [  
+    "Dezz-S4QS6X-10K"  
+   ],   
+ 18: [  
+    "Dezz-SH2DEY-10K"  
+    ],   
+ 19: [  
+    "Dezz-X582HF-10K"  
+   ]  
+};  
+  
+function getMenuKey(loginID, menu){
+  return "MENU_USED_" + loginID + "_" + menu;
 }
-// ============================
-// DAFTAR KEY PER KATEGORI
-// ============================
-const KEYS = {
-  1: [
-    "RedHolo_10KDX"
-  ],
-  2: [
-    "DezzXmodz_HG10K"
-  ],
-  3: [
-    "AbcdezZXMODS"
-  ], 
-  4: [
-    "TIMODSDEZZ"
-  ],
-  5: [
-    "HoloEmber10"
-  ],
-  6: [
-    "JANGANLUPABUY"
-  ],
-  7: [
-    "PurpleVoid10"
-  ],
-  8: [
-    "YellowFlux_K10"
-  ], 
-  9: [
-    "Dezz-HMJHQU-10K"
-  ],
- 10: [
-    "Dezz-5YWX4X-10K"
-  ], 
- 11: [
-    "Dezz-XGTVEJ-10K"
- ], 
- 12: [
-    "Dezz-SZKSLB-10K"
-   ],
- 13: [
-    "Dezz-LX6GN5-10K"
-   ], 
- 14: [
-    "Dezz-4VFU2C-10K"
-    ], 
- 15: [
-    "Dezz-M3D928-10K"
-   ], 
- 16: [
-    "Dezz-QQ98G7-10K"
-   ], 
- 17: [
-    "Dezz-S4QS6X-10K"
-   ], 
- 18: [
-    "Dezz-SH2DEY-10K"
-    ], 
- 19: [
-    "Dezz-X582HF-10K"
-   ]
-};
-
-const STORAGE_KEY = "4" + navigator.userAgent.replace(/\W/g,'');
-
-const keyBox = document.getElementById("keyBox");
-const getBtn = document.getElementById("getBtn");
-
-// CEK JIKA SUDAH AMBIL KEY
-const savedKey = localStorage.getItem(STORAGE_KEY);
-
-if (savedKey) {
-  const keyType = document.getElementById("keyType");
-
-  if (keyType) {
-    keyType.disabled = true;
-  }
-
-  keyBox.innerText = savedKey;
-  getBtn.disabled = true;
-  getBtn.innerText = "PASSWORD SUDAH DIAMBIL";
-}
-
-// GET KEY SESUAI MENU
+const keyBox = document.getElementById("keyBox");  
+const getBtn = document.getElementById("getBtn");  
+  
+// GET KEY SESUAI MENU  
 function getKey(){
-  if(localStorage.getItem(STORAGE_KEY)) return;
+  const loginID = localStorage.getItem("CURRENT_LOGIN");
+  if(!loginID){
+    alert("❌ Silakan login dulu!");
+    return;
+  }
 
   const type = document.getElementById("keyType").value;
   if(!type){
-    alert("Pilih jenis PASSWORD dulu!");
+    alert("Pilih menu password dulu!");
+    return;
+  }
+
+  const menuKey = getMenuKey(loginID, type);
+
+  if(localStorage.getItem(menuKey)){
+    keyBox.innerText = localStorage.getItem(menuKey);
+    getBtn.disabled = true;
+    getBtn.innerText = "MENU HABIS";
     return;
   }
 
   const list = KEYS[type];
-  const randomIndex = Math.floor(Math.random() * list.length);
-  const selectedKey = list[randomIndex];
+  const selectedKey = list[Math.floor(Math.random() * list.length)];
 
-  localStorage.setItem(STORAGE_KEY, selectedKey);
+  localStorage.setItem(menuKey, selectedKey);
   keyBox.innerText = selectedKey;
 
   getBtn.disabled = true;
   getBtn.innerText = "PASSWORD SUDAH DIAMBIL";
 }
+  
+// COPY KEY  
+function copyKey(){  
+  const text = keyBox.innerText;  
+  if(text === "BELUM ADA PASSWORD"){  
+    alert("Ambil PASSWORD dulu!");  
+    return;  
+  }  
+  navigator.clipboard.writeText(text);  
+  alert("PASSWORD berhasil disalin!");  
+}  
 
-// COPY KEY
-function copyKey(){
-  const text = keyBox.innerText;
-  if(text === "BELUM ADA PASSWORD"){
-    alert("Ambil PASSWORD dulu!");
-    return;
+document.getElementById("keyType").addEventListener("change", function(){
+  const loginID = localStorage.getItem("CURRENT_LOGIN");
+  if(!loginID) return;
+
+  const type = this.value;
+  if(!type) return;
+
+  const menuKey = getMenuKey(loginID, type);
+  const used = localStorage.getItem(menuKey);
+
+  if(used){
+    keyBox.innerText = used;
+    getBtn.disabled = true;
+    getBtn.innerText = "MENU HABIS";
+  }else{
+    keyBox.innerText = "BELUM ADA PASSWORD";
+    getBtn.disabled = false;
+    getBtn.innerText = "GET PASSWORD";
   }
-  navigator.clipboard.writeText(text);
-  alert("PASSWORD berhasil disalin!");
-}
-</script>
-
-</body>
+});
+</script> 
+</body>  
 </html>
