@@ -127,6 +127,91 @@ button{
   font-size:11px;  
   color:#666;  
 }  
+/* judul papan */
+.admin-board-title{
+  font-size:13px;
+  font-weight:900;
+  color:#7dff7d;
+  margin-bottom:10px;
+  text-shadow:0 0 8px rgba(125,255,125,0.7);
+}
+
+/* isi teks */
+.admin-board-body{
+  font-size:13px;
+  line-height:1.6;
+  color:#eaffea;
+  margin-bottom:10px;
+}
+
+/* highlight */
+.admin-board .hl{
+  color:#7dff7d;
+  font-weight:800;
+  text-shadow:0 0 6px rgba(125,255,125,0.6);
+}
+
+/* footer / kontak */
+.admin-board-footer{
+  font-size:12px;
+  color:#bfffe8;
+  border-top:1px dashed rgba(125,255,125,0.25);
+  padding-top:8px;
+}
+
+.admin-board-footer a{
+  color:#7dff7d;
+  text-decoration:none;
+  font-weight:800;
+}
+
+.admin-board-footer a:hover{
+  text-shadow:0 0 8px rgba(125,255,125,0.8);
+}
+
+.main-title {
+  font-size: 24px;       /* ukuran lebih kecil */
+  margin: 0;             /* hapus margin default */
+  text-align: left;      /* geser ke kiri */
+  color: #7dff7d;        /* warna neon sesuai tema */
+}
+
+/* pindahkan ke atas / kanan */
+.toprow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* judul kiri, logout kanan */
+  width: 100%;                     /* pastikan container full */
+}
+
+/* Judul kiri */
+.toprow h1 {
+  font-size: 24px;
+  margin: 0;
+  flex: 1;  /* biar mengambil space yang tersisa */
+}
+
+/* Logout kanan */
+.logout {
+  width: 100px;            /* lebar tombol */
+  text-align: center;      /* teks di tengah tombol */
+  padding: 6px 12px;
+  background: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  flex-shrink: 0;          /* jangan mengecil walau flex container sempit */
+}
+
+.main-title {
+  font-size: 24px;       /* ukuran lebih kecil */
+  margin: 0;             /* hapus margin default */
+  text-align: left;      /* rata kiri */
+  color: #7dff7d;        /* warna neon */
+  font-weight: 50;
+}
 </style>  </head>  <body>  <!-- LOGIN OVERLAY -->  <div id="loginOverlay">  
   <div class="login-box">  
     <h2>🔐 LOGIN ACCESS</h2>  
@@ -138,7 +223,25 @@ button{
 <div class="footer">  
   © 2026 DezzXMods  
 </div>
+<div class="admin-board">
+  <div class="admin-board-title">☕ 𝙄𝙉𝙁𝙊 𝙎𝙄𝙎𝙏𝙀𝙈</div>
 
+  <div class="admin-board-body">
+    <b>𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎</b> ᴀᴅᴀʟᴀʜ ᴀᴅᴍɪɴ ᴅᴀʀɪ ᴡᴇʙsɪᴛᴇ ɪɴɪ ᴊᴀɴɢᴀɴ ʟᴜᴘᴀ ᴊᴏɪɴ ᴄʜ, sᴀʟᴜʀᴀɴ ʏᴀɴɢ sᴜᴅᴀʜ ᴀᴅᴍɪɴ ᴛᴀʀᴏ ᴅɪ ʙᴀᴡᴀʜ. 
+    <span class="hl"> ᴅɪ ᴡᴇʙsɪᴛᴇ ɪɴɪ ᴋᴀᴍᴜ ʙɪsᴀ ɢᴇɴᴇʀᴇᴛ ᴘᴡ (ᴋᴇʏ) ғɪʟᴇ ᴢɪᴘ ʏɢ sᴜᴅᴀʜ ᴅɪ ʙᴇʟɪ ᴅᴀʀɪ ᴀᴅᴍɪɴ, ᴜɴsᴇʀ/ᴘᴀss sɪʟᴀʜᴋᴀɴ ᴅᴍ ᴋᴇ ᴀᴅᴍɪɴ ʏɢ sᴜᴅᴀʜ sᴀʏa ᴛᴀʀᴏ ʟɪɴᴋ ᴅɪʙᴀᴡᴀʜ</span>.<br>
+     ᴋʜᴜsᴜs ɢᴇɴᴇʀᴀᴛᴇ <span class="hl">𝙆𝙀𝙔 𝙁𝙄𝙇𝙀 𝙕𝙄𝙋</span> ʏɢ sᴜᴅᴀʜ ʙᴜʏ ᴅᴀʀɪ ᴀᴅᴍɪɴ.
+  </div>
+
+  <div class="admin-board-footer">
+    📩 PIN LOGIN / AKSES FULL<br>
+    DM ADMIN:
+    <a href="https://t.me/dezzreal1" target="_blank">CH Telegram</a> •
+     <a href="https://whatsapp.com/channel/0029Vb7Gl23EFeXuLGF1yB1G" target="_blank">CH Saluran Wa</a> •
+    <a href="https://t.me/dezzmods" target="_blank">Dm Telegram</a> •
+    <a href="https://wa.me/6281324226894?text=" target="_blank">Dm WhatsApp</a> •
+    <a href="https://www.youtube.com/@DezZXMods" target="_blank"><span>CH YOUTUBE<span></a>
+  </div>
+</div>
   </div>  
 </div>  <!-- ISI HALAMAN -->  <div style="padding:40px;text-align:center;">  
   <h1>WELCOME</h1>  
@@ -184,7 +287,7 @@ const LOGIN_PREFIX = "LOGIN_USED_";
 
 // GANTI LOGIN DI SINI  
 const USERS = [
- { user: "Dezz", pass: "Dezz22LA19K" }, 
+  { user: "Dezz", pass: "Dezz22LA19K" }, 
   { user: "Dezz", pass: "DezzY2LA19K" }, 
   { user: "Dezz", pass: "DezzQ74Y19K" }, 
   { user: "Dezz", pass: "Dezz2ME319K" }, 
@@ -194,9 +297,6 @@ const USERS = [
   { user: "Dezz", pass: "DezzMM6V10K" }, 
   { user: "Dezz", pass: "DezzQBCJ10K" }, 
   { user: "Dezz", pass: "DezzDHS110K" }, 
-  { user: "Dezz", pass: "DezzJ17V10K" }, 
-  { user: "Dezz", pass: "Dezz3Z5D10K" }, 
-  { user: "Dezz", pass: "DezzKVBA10K" },
   { user: "Dezz", pass: "1" }
 ];
 
@@ -220,9 +320,9 @@ function login(){
 
   const loginID = LOGIN_PREFIX + u + "_" + p;
 
-  // CEK SUDAH PERNAH LOGIN DENGAN USER+PASS INI
+    // CEK SUDAH PERNAH LOGIN DENGAN USER+PASS INI
   if(localStorage.getItem(loginID)){
-    alert("❌ Akun ini sudah dipakai & tidak bisa login lagi!");
+    alert("🚫 UNSER/PASS  SUDAH DIPAKAI & TIDAK BISA LOGIN LAGI‼️⚠️");
     return;
   }
 
