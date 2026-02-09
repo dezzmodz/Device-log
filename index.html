@@ -212,14 +212,28 @@ button{
   color: #7dff7d;        /* warna neon */
   font-weight: 50;
 }
-</style>  </head>  <body>  <!-- LOGIN OVERLAY -->  <div id="loginOverlay">  
+
+</style>  
+</head>  
+<body> 
+ <!-- LOGIN OVERLAY -->  <div id="loginOverlay">  
   <div class="login-box">  
     <h2>🔐 LOGIN ACCESS</h2>  
     <p>Masukkan Username & Password</p>  <input type="text" id="username" placeholder="Username">  
 <input type="password" id="password" placeholder="Password">  
 
 <button onclick="login()">LOGIN</button>  
-
+<button onclick="resetAll()" style="
+  margin-top:15px;
+  background:#ff4d4d;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  font-weight:bold;
+">
+🔁 RESET SYSTEM (KHUSUS ADMIN)
+</button>
 <div class="footer">  
   © 2026 DezzXMods  
 </div>
@@ -297,24 +311,29 @@ button{
 </div>  
 
 <script>  
+function resetAll(){
+  const pin = prompt("Masukkan PIN ADMIN:");
+  if(pin !== "Dezzonwer20"){
+    alert("❌ PIN salah!");
+    return;
+  }
+
+  localStorage.clear();
+  alert("♻️ Reset Success...");
+  location.reload();
+}
 const LOGIN_PREFIX = "LOGIN_USED_";
+const GLOBAL_PW_KEY = "GLOBAL_PW_USED_";
 
 // GANTI LOGIN DI SINI  
 const USERS = [
-  { user: "Dezz", pass: "1Dezz22LA19K" }, 
-  { user: "Dezz", pass: "2DezzY2LA19K" }, 
-  { user: "Dezz", pass: "3DezzQ74Y19K" }, 
-  { user: "Dezz", pass: "4Dezz2ME319K" }, 
-  { user: "Dezz", pass: "5DezzTDL719K" }, 
-  { user: "Dezz", pass: "6DezzJ5JN19K" }, 
-  { user: "Dezz", pass: "7Dezz772Z19K" }, 
-  { user: "Dezz", pass: "8DezzMM6V10K" }, 
-  { user: "Dezz", pass: "9DezzQBCJ10K" }, 
-  { user: "Dezz", pass: "10DezzDHS110K" }, 
+  { user: "#WxWM_10K", pass: "#A6bG_Dezz" }, 
+  { user: "#UXTH_19K", pass: "#UXTH_19K" }, 
+  { user: "#uqzd_10K", pass: "#wUAz_Dezz" }, 
   { user: "Dezz", pass: "1" }
 ];
 
-const LOGIN_KEY = "5"; 
+const LOGIN_KEY = "1"; 
   
 // AUTO LOGIN JIKA SUDAH PERNAH LOGIN  
 function login(){
@@ -346,6 +365,16 @@ function login(){
 
   document.getElementById("loginOverlay").style.display = "none";
 }
+function autoLogout(){
+  localStorage.removeItem("CURRENT_LOGIN");
+
+  setTimeout(() => {
+    document.getElementById("loginOverlay").style.display = "flex";
+    alert("🔥 Password berhasil diambil\n🔒 Sistem otomatis logout");
+  }, 30);
+}
+const keyBox = document.getElementById("keyBox");
+const getBtn = document.getElementById("getBtn");
 // ============================  
 // DAFTAR KEY PER KATEGORI  
 // ============================  
@@ -455,17 +484,20 @@ const KEYS = {
 ]
 };  
   
-function getMenuKey(loginID, menu){
-  return "MENU_USED_" + loginID + "_" + menu;
-}
-const keyBox = document.getElementById("keyBox");  
-const getBtn = document.getElementById("getBtn");  
-  
-// GET KEY SESUAI MENU  
 function getKey(){
   const loginID = localStorage.getItem("CURRENT_LOGIN");
   if(!loginID){
     alert("❌ Silakan login dulu!");
+    return;
+  }
+
+  const globalKey = GLOBAL_PW_KEY + loginID;
+
+  // 🔒 JIKA SUDAH PERNAH AMBIL PASSWORD
+  if(localStorage.getItem(globalKey)){
+    keyBox.innerText = localStorage.getItem(globalKey);
+    getBtn.disabled = true;
+    getBtn.innerText = "PASSWORD SUDAH DIPAKAI";
     return;
   }
 
@@ -475,21 +507,14 @@ function getKey(){
     return;
   }
 
-  const menuKey = getMenuKey(loginID, type);
-
-  if(localStorage.getItem(menuKey)){
-    keyBox.innerText = localStorage.getItem(menuKey);
-    getBtn.disabled = true;
-    getBtn.innerText = "MENU HABIS";
-    return;
-  }
-
   const list = KEYS[type];
   const selectedKey = list[Math.floor(Math.random() * list.length)];
 
-  localStorage.setItem(menuKey, selectedKey);
+  // SIMPAN PASSWORD GLOBAL (1x SAJA)
+  localStorage.setItem(globalKey, selectedKey);
+const keyBox = document.getElementById("keyBox");
+const getBtn = document.getElementById("getBtn");
   keyBox.innerText = selectedKey;
-
   getBtn.disabled = true;
   getBtn.innerText = "PASSWORD SUDAH DIAMBIL";
 }
@@ -497,28 +522,28 @@ function getKey(){
 // COPY KEY  
 function copyKey(){  
   const text = keyBox.innerText;  
+
   if(text === "BELUM ADA PASSWORD"){  
     alert("Ambil PASSWORD dulu!");  
     return;  
   }  
-  navigator.clipboard.writeText(text);  
-  alert("PASSWORD berhasil disalin!");  
-}  
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("✨ PASSWORD SUCCESS ✨!\n 🔒 Demi keamanan, sistem logout otomatis");
+    autoLogout(); // ✅ LOGOUT SETELAH COPY
+  });
+}
 
 document.getElementById("keyType").addEventListener("change", function(){
   const loginID = localStorage.getItem("CURRENT_LOGIN");
   if(!loginID) return;
 
-  const type = this.value;
-  if(!type) return;
+  const globalKey = GLOBAL_PW_KEY + loginID;
 
-  const menuKey = getMenuKey(loginID, type);
-  const used = localStorage.getItem(menuKey);
-
-  if(used){
-    keyBox.innerText = used;
+  if(localStorage.getItem(globalKey)){
+    keyBox.innerText = localStorage.getItem(globalKey);
     getBtn.disabled = true;
-    getBtn.innerText = "MENU HABIS";
+    getBtn.innerText = "PASSWORD SUDAH DIPAKAI";
   }else{
     keyBox.innerText = "BELUM ADA PASSWORD";
     getBtn.disabled = false;
