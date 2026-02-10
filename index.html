@@ -212,15 +212,48 @@ button{
   color: #7dff7d;        /* warna neon */
   font-weight: 50;
 }
+.login-logo{
+  width:80px;
+  margin-bottom:10px;
+  filter: drop-shadow(0 0 8px #00ffcc);
+}
+.login-logo{
+  width:100px;
+  margin:0 auto 1px;
+  display:block;
+  border-radius:3px;
+  box-shadow:0 0 10px rgba(0,0,200,.6);
+}
+.robot-text{
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #00ffcc;
+}
 
+.cursor::after{
+  content: "✍️";
+  margin-left: 4px;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink{
+  50%{ opacity: 0; }
+}
 </style>  
 </head>  
 <body> 
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
  <!-- LOGIN OVERLAY -->  <div id="loginOverlay">  
-  <div class="login-box">  
+  <div class="login-box">
+  <img src="https://files.catbox.moe/5pf5s6.jpg" class="login-logo">
     <h2>🔐 LOGIN ACCESS</h2>  
-    <p>Masukkan Username & Password</p>  <input type="text" id="username" placeholder="Username">  
-<input type="password" id="password" placeholder="Password">  
+    <div id="robotWelcome" class="robot-text cursor"></div>
+    <p>WEB GET PASSWORD ZIP FILE </p>Masukkan Username & Password</p>  
+    
+<input type="text" id="username" placeholder="⌨︎︎ ᴇɴᴛᴇʀ ᴜsᴇʀɴᴀᴍᴇ">  
+<input type="password" id="password" placeholder="⌨︎︎ ᴇɴᴛᴇʀ ᴘᴀssᴡᴏʀᴅ">  
 
 <button onclick="login()">LOGIN</button>  
 <button onclick="resetAll()" style="
@@ -311,17 +344,44 @@ button{
 </div>  
 
 <script>  
+function robotType(el, text, speed = 45){
+  el.innerText = "";
+  let i = 0;
+
+  const t = setInterval(() => {
+    el.innerText += text[i];
+    i++;
+    if(i >= text.length) clearInterval(t);
+  }, speed);
+}
+robotType(
+  document.getElementById("robotWelcome"),
+  "WELCOME TO WEB GET PASSWORD ZIP"
+);
+
 function resetAll(){
-  const pin = prompt("Masukkan PIN ADMIN:");
+  const pin = prompt("🔐 KHUSUS ADMIN\nMasukkan PIN:");
+
   if(pin !== "Dezzonwer20"){
-    alert("❌ PIN salah!");
+    alert(
+      "🚫 ACCESS DENIED\n" +
+      "⚠️ PIN ADMIN SALAH\n" +
+      "⛔ OPERASI DIBATALKAN"
+    );
     return;
   }
 
   localStorage.clear();
-  alert("♻️ Reset Success...");
+
+  alert(
+    "♻️ SYSTEM RESET SUCCESS\n" +
+    "🔓 SEMUA AKSES DIKUNCI ULANG\n" +
+    "✅ ADMIN CONTROL RESTORED"
+  );
+
   location.reload();
 }
+
 const LOGIN_PREFIX = "LOGIN_USED_";
 const GLOBAL_PW_KEY = "GLOBAL_PW_USED_";
 
@@ -341,13 +401,13 @@ function login(){
   const p = document.getElementById("password").value.trim();
 
   if(!u || !p){
-    alert("Username & Password wajib diisi!");
+    alert("🚫 INPUT TIDAK VALID\n🔐 USERNAME & PASSWORD WAJIB DIISI");
     return;
   }
 
   const valid = USERS.some(acc => acc.user === u && acc.pass === p);
   if(!valid){
-    alert("Username atau Password salah!");
+    alert("⛔ AUTHENTICATION FAILED\n USERNAME ATAU PASSWORD SALAH");
     return;
   }
 
@@ -355,7 +415,7 @@ function login(){
 
     // CEK SUDAH PERNAH LOGIN DENGAN USER+PASS INI
   if(localStorage.getItem(loginID)){
-    alert("🚫 UNSER/PASS  SUDAH DIPAKAI & TIDAK BISA LOGIN LAGI‼️⚠️");
+    alert("🔐 SECURITY LOCK ACTIVE\n🚫 USER & PASSWORD SUDAH DIGUNAKAN\n⛔ AKSES DITUTUP");
     return;
   }
 
@@ -370,8 +430,8 @@ function autoLogout(){
 
   setTimeout(() => {
     document.getElementById("loginOverlay").style.display = "flex";
-    alert("🔥 Password berhasil diambil\n🔒 Sistem otomatis logout");
-  }, 30);
+    alert("⛔ SESSION TERMINATED\n 🔒 AUTO LOGOUT EXECUTED");
+  }, 1);
 }
 const keyBox = document.getElementById("keyBox");
 const getBtn = document.getElementById("getBtn");
@@ -487,7 +547,7 @@ const KEYS = {
 function getKey(){
   const loginID = localStorage.getItem("CURRENT_LOGIN");
   if(!loginID){
-    alert("❌ Silakan login dulu!");
+    alert("🚫 Akses ditolak\n🔒 Login diperlukan");
     return;
   }
 
@@ -497,7 +557,7 @@ function getKey(){
   if(localStorage.getItem(globalKey)){
     keyBox.innerText = localStorage.getItem(globalKey);
     getBtn.disabled = true;
-    getBtn.innerText = "PASSWORD SUDAH DIPAKAI";
+    getBtn.innerText = "PASSWORD SUDAH DIAMBIL";
     return;
   }
 
@@ -524,12 +584,12 @@ function copyKey(){
   const text = keyBox.innerText;  
 
   if(text === "BELUM ADA PASSWORD"){  
-    alert("Ambil PASSWORD dulu!");  
+    alert("🚫 AKSI DIBLOKIR\n🔑 AMBIL PASSWORD TERLEBIH DAHULU");  
     return;  
   }  
 
   navigator.clipboard.writeText(text).then(() => {
-    alert("✨ PASSWORD SUCCESS ✨!\n 🔒 Demi keamanan, sistem logout otomatis");
+    alert("▶PASSWORD SUCCESS... \n 🔒 Sistem logout otomatis 🫶");
     autoLogout(); // ✅ LOGOUT SETELAH COPY
   });
 }
@@ -543,9 +603,9 @@ document.getElementById("keyType").addEventListener("change", function(){
   if(localStorage.getItem(globalKey)){
     keyBox.innerText = localStorage.getItem(globalKey);
     getBtn.disabled = true;
-    getBtn.innerText = "PASSWORD SUDAH DIPAKAI";
+    getBtn.innerText = "⛔ ACCESS LOCKED\nPASSWORD TELAH DIKLAIM";
   }else{
-    keyBox.innerText = "BELUM ADA PASSWORD";
+    keyBox.innerText = "PASSWORD STATUS: INACTIVE";
     getBtn.disabled = false;
     getBtn.innerText = "GET PASSWORD";
   }
