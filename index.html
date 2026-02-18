@@ -1,294 +1,626 @@
-<!DOCTYPE html><html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website HOLOGRAM</title><!-- ===== STYLE SEDERHANA ===== -->
-<style>
-
-/* ===== BODY ===== */
-body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    text-align:center;
-    background:#f1f5f9;
-    color:#0f172a;
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+<meta charset="UTF-8">  
+<title>Get Password - DezzXMods</title>  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <style>  
+body{  
+  margin:0;  
+  font-family:Arial, Helvetica, sans-serif;  
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);  
+  color:#fff;  
+}  
+.container{  
+  max-width:420px;  
+  margin:60px auto;  
+  background:rgba(0,0,0,0.55);  
+  padding:25px;  
+  border-radius:18px;  
+  text-align:center;  
+}  
+select{  
+  width:100%;  
+  padding:12px;  
+  border-radius:10px;  
+  border:none;  
+  margin-top:10px;  
+  font-size:14px;  
+}  
+.key-box{  
+  margin:18px 0;  
+  background:#111;  
+  border:1px dashed #00ffcc;  
+  border-radius:12px;  
+  padding:14px;  
+  font-size:15px;  
+  word-break:break-all;  
+}  
+button{  
+  width:100%;  
+  padding:14px;  
+  border:none;  
+  border-radius:12px;  
+  font-size:15px;  
+  font-weight:bold;  
+  cursor:pointer;  
+}  
+.get{  
+  background:#00ffcc;  
+  color:#000;  
+}  
+.get:disabled{  
+  background:#555;  
+  color:#ccc;  
+  cursor:not-allowed;  
+}  
+.copy{  
+  margin-top:10px;  
+  background:#222;  
+  color:#00ffcc;  
+  border:1px solid #00ffcc;  
+}  
+.footer{  
+  margin-top:20px;  
+  font-size:12px;  
+  color:#bbb;  
+  opacity:0.85;  
+}  
+.footer span{  
+  color:#00ffcc;  
+  font-weight:bold;  
+}  
+/* OVERLAY */  
+#loginOverlay{  
+  position:fixed;  
+  top:0;  
+  left:0;  
+  width:100%;  
+  height:100%;  
+  background:rgba(0,0,0,0.75);  
+  backdrop-filter:blur(8px);  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  z-index:9999;  
+}  
+  
+.login-box{  
+  background:#111;  
+  padding:25px;  
+  border-radius:16px;  
+  width:320px;  
+  text-align:center;  
+  box-shadow:0 15px 35px rgba(0,0,0,.5);  
+}  
+  
+.login-box h2{  
+  margin-bottom:10px;  
+}  
+  
+.login-box p{  
+  font-size:13px;  
+  color:#aaa;  
+}  
+  
+.login-box input{  
+  width:100%;  
+  padding:12px;  
+  margin-top:10px;  
+  border:none;  
+  border-radius:10px;  
+  font-size:14px;  
+}  
+  
+.login-box button{  
+  width:100%;  
+  margin-top:15px;  
+  padding:12px;  
+  border:none;  
+  border-radius:10px;  
+  background:#00ffcc;  
+  color:#000;  
+  font-weight:bold;  
+  cursor:pointer;  
+}  
+  
+.footer{  
+  margin-top:15px;  
+  font-size:11px;  
+  color:#666;  
+}  
+/* judul papan */
+.admin-board-title{
+  font-size:13px;
+  font-weight:900;
+  color:#7dff7d;
+  margin-bottom:10px;
+  text-shadow:0 0 8px rgba(125,255,125,0.7);
 }
 
-/* ===== HEADER ===== */
-header{
-    background:#1e3a8a;
-    padding:20px;
-    color:white;
-    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+/* isi teks */
+.admin-board-body{
+  font-size:13px;
+  line-height:1.6;
+  color:#eaffea;
+  margin-bottom:10px;
 }
 
-header h1{
-    margin:0;
-    font-size:24px;
+/* highlight */
+.admin-board .hl{
+  color:#7dff7d;
+  font-weight:800;
+  text-shadow:0 0 6px rgba(125,255,125,0.6);
 }
 
-/* ===== MAIN ===== */
-main{
-    padding:40px 20px;
+/* footer / kontak */
+.admin-board-footer{
+  font-size:12px;
+  color:#bfffe8;
+  border-top:1px dashed rgba(125,255,125,0.25);
+  padding-top:8px;
 }
 
-/* ===== BUTTON LINK SFL STYLE ===== */
-a.download-btn{
-    display:block;
-    width:260px;
-    margin:12px auto;
-    padding:14px;
-    background:#2563eb;
-    color:white;
-    text-decoration:none;
-    border-radius:6px;
-    font-weight:bold;
-    transition:0.25s;
-    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+.admin-board-footer a{
+  color:#7dff7d;
+  text-decoration:none;
+  font-weight:800;
 }
 
-/* hover khas safelinku */
-a.download-btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-2px);
-    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+.admin-board-footer a:hover{
+  text-shadow:0 0 8px rgba(125,255,125,0.8);
 }
 
-/* ===== FOOTER ===== */
-footer{
-    margin-top:50px;
-    padding:15px;
-    background:#e2e8f0;
-    color:#334155;
-    font-size:14px;
+.main-title {
+  font-size: 24px;       /* ukuran lebih kecil */
+  margin: 0;             /* hapus margin default */
+  text-align: left;      /* geser ke kiri */
+  color: #7dff7d;        /* warna neon sesuai tema */
 }
 
-</style>
+/* pindahkan ke atas / kanan */
+.toprow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* judul kiri, logout kanan */
+  width: 100%;                     /* pastikan container full */
+}
 
-<!-- ===== SCRIPT SAFELINKU ===== -->
-<!-- GANTI API TOKEN DI BAWAH INI -->
-<script type="text/javascript">
-    var go_url = 'https://sfl.gl/';
-    var api = '75a1ae514a36f53d1909cc9f25969eec800bde35'; // ← Tambahkan API token kamu
-    var shorten_includ = [
-  "device-log.vercel.app", 
-  "web-sfl.vercel.app", 
-  "www.youtube.com", 
-  "link.dana.id", 
-  "tiktok.com", 
-  "t.me", 
-  "sub4unlock.co", 
-  "www.mediafire.com", 
-  "safefileku.com",
-  "whatsapp.com"
+/* Judul kiri */
+.toprow h1 {
+  font-size: 24px;
+  margin: 0;
+  flex: 1;  /* biar mengambil space yang tersisa */
+}
+
+/* Logout kanan */
+.logout {
+  width: 100px;            /* lebar tombol */
+  text-align: center;      /* teks di tengah tombol */
+  padding: 6px 12px;
+  background: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  flex-shrink: 0;          /* jangan mengecil walau flex container sempit */
+}
+
+.main-title {
+  font-size: 24px;       /* ukuran lebih kecil */
+  margin: 0;             /* hapus margin default */
+  text-align: left;      /* rata kiri */
+  color: #7dff7d;        /* warna neon */
+  font-weight: 50;
+}
+.login-logo{
+  width:80px;
+  margin-bottom:10px;
+  filter: drop-shadow(0 0 8px #00ffcc);
+}
+.login-logo{
+  width:100px;
+  margin:0 auto 1px;
+  display:block;
+  border-radius:3px;
+  box-shadow:0 0 10px rgba(0,0,200,.6);
+}
+.robot-text{
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #00ffcc;
+}
+
+.cursor::after{
+  content: "✍️";
+  margin-left: 4px;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink{
+  50%{ opacity: 0; }
+}
+</style>  
+</head>  
+<body> 
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+ <!-- LOGIN OVERLAY -->  <div id="loginOverlay">  
+  <div class="login-box">
+  <img src="https://files.catbox.moe/5pf5s6.jpg" class="login-logo">
+    <h2>🔐 LOGIN ACCESS</h2>  
+    <div id="robotWelcome" class="robot-text cursor"></div>
+    <p>WEB GET PASSWORD ZIP FILE </p>Masukkan Username & Password</p>  
+    
+<input type="text" id="username" placeholder="⌨︎︎ ᴇɴᴛᴇʀ ᴜsᴇʀɴᴀᴍᴇ">  
+<input type="password" id="password" placeholder="⌨︎︎ ᴇɴᴛᴇʀ ᴘᴀssᴡᴏʀᴅ">  
+
+<button onclick="login()">LOGIN</button>  
+<button onclick="resetAll()" style="
+  margin-top:15px;
+  background:#ff4d4d;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  font-weight:bold;
+">
+🔁 RESET SYSTEM (KHUSUS ADMIN)
+</button>
+<div class="footer">  
+  © 2026 DezzXMods  
+</div>
+<div class="admin-board">
+  <div class="admin-board-title">☕ 𝙄𝙉𝙁𝙊 𝙎𝙄𝙎𝙏𝙀𝙈</div>
+
+  <div class="admin-board-body">
+    <b>𝘿𝙚𝙯𝙕✘𝙈𝙊𝘿𝙎</b> ᴀᴅᴀʟᴀʜ ᴀᴅᴍɪɴ ᴅᴀʀɪ ᴡᴇʙsɪᴛᴇ ɪɴɪ ᴊᴀɴɢᴀɴ ʟᴜᴘᴀ ᴊᴏɪɴ ᴄʜ, sᴀʟᴜʀᴀɴ ʏᴀɴɢ sᴜᴅᴀʜ ᴀᴅᴍɪɴ ᴛᴀʀᴏ ᴅɪ ʙᴀᴡᴀʜ. 
+    <span class="hl"> ᴅɪ ᴡᴇʙsɪᴛᴇ ɪɴɪ ᴋᴀᴍᴜ ʙɪsᴀ ɢᴇɴᴇʀᴇᴛ ᴘᴡ (ᴋᴇʏ) ғɪʟᴇ ᴢɪᴘ ʏɢ sᴜᴅᴀʜ ᴅɪ ʙᴇʟɪ ᴅᴀʀɪ ᴀᴅᴍɪɴ, ᴜɴsᴇʀ/ᴘᴀss sɪʟᴀʜᴋᴀɴ ᴅᴍ ᴋᴇ ᴀᴅᴍɪɴ ʏɢ sᴜᴅᴀʜ sᴀʏa ᴛᴀʀᴏ ʟɪɴᴋ ᴅɪʙᴀᴡᴀʜ</span>.<br>
+     ᴋʜᴜsᴜs ɢᴇɴᴇʀᴀᴛᴇ <span class="hl">𝙆𝙀𝙔 𝙁𝙄𝙇𝙀 𝙕𝙄𝙋</span> ʏɢ sᴜᴅᴀʜ ʙᴜʏ ᴅᴀʀɪ ᴀᴅᴍɪɴ.
+  </div>
+
+  <div class="admin-board-footer">
+    📩 PIN LOGIN / AKSES FULL<br>
+    DM ADMIN:
+    <a href="https://t.me/dezzreal1" target="_blank">CH Telegram</a> •
+     <a href="https://whatsapp.com/channel/0029Vb7Gl23EFeXuLGF1yB1G" target="_blank">CH Saluran Wa</a> •
+    <a href="https://t.me/dezzmods" target="_blank">Dm Telegram</a> •
+    <a href="https://wa.me/6281324226894?text=" target="_blank">Dm WhatsApp</a> •
+    <a href="https://www.youtube.com/@DezZXMods" target="_blank"><span>CH YOUTUBE<span></a>
+  </div>
+</div>
+  </div>  
+</div>  <!-- ISI HALAMAN -->  <div style="padding:40px;text-align:center;">  
+  <h1>WELCOME</h1>  
+  <p>Konten ini terkunci sebelum login.</p>  
+</div>  <div class="container">  
+  <h2> GET PASSWORD ACCESS</h2>  
+<div class="footer">  
+  © 2026 <span>DezzXMods</span><br>  
+  Owner: @dezzreal1  
+</div>  
+  <!-- MENU KEY -->  
+  <select id="keyType">  
+    <option value="">--  PILIH MENU PASSWORD  --</option>  
+    <optgroup label="PILIH MENU PASSWORD FF MAX/ORI OBB52">
+    <option value="1">1. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙍𝙚𝙙🔴 </option>  
+    <option value="2">2. HOLOGRAM GREEN 🟢 </option>  
+    <option value="3">3. HACK KARAKTER</option>  
+    <option value="4">4. HOLOGRAM 🔴 RED #BY-DEZZ</option>  
+    <option value="5">5. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙊𝙧𝙖𝙣𝙮𝙚 🟠</option>  
+    <option value="6">6. HOLO SENJATA BLUE 🔵</option>  
+    <option value="7">7. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙋𝙪𝙧𝙥𝙡𝙚 🟣</option>  
+    <option value="8">8. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙔𝙚𝙡𝙡𝙤𝙬 🟡</option>  
+    <option value="9">9. HOLOGRAM White ⚪ ☠️ MODE EXTREME</option>  
+    <option value="10">10. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 🟢 HIJAU TOXIC</option>  
+    <option value="11">11. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  BlueXPurple🔵X🟣</option>  
+    <option value="12">12. 𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  GreenXBlue 🟢x🔵</option>  
+    <option value="13">13. HOLOGRAM GREEN X GLOW TRANS</option>  
+    <option value="14">14. HOLOGRAM RED X GLOW TRANS</option>  
+    <option value="15">15. HOLOGRAM YELLOW X GLOW TRANS</option>  
+    <option value="16">16. HOLOGRAM ORANGYE X GLOW TRANS</option>  
+    <option value="17">17. HOLOGRAM PUTIH X GLOW TRANS</option>  
+    <option value="18">18. HOLOGRAM PURPLE X GLOW TRANS</option>  
+    <option value="19">19. HOLOGRAM BlUE X GLOW TRANS</option>   
+    <option value="20">20. HOLOGRAM WHITE ⚪ FFMax</option>
+    <option value="21">21. HOLOGRAM RED🔴 FFMax</option>
+    <option value="22">22. HOLOGRAM YELLOW FFMax</option>
+    <option value="23">23. HOLOGRAM BLUE🔵 FFMax</option>
+    <option value="24">24. HOLOGRAM BLACK⚫ FFMax</option>
+    <option value="25">25. HOLOGRAM BROWN🟤 FFMax</option>
+    <option value="26">26. HOLOGRAM CYAN🩵 FFMax</option>
+    <option value="27">27. HOLOGRAM GREEN🟢 FFMax</option>
+    <option value="28">28. HOLOGRAM GREY🩶 FFMax</option>
+    <option value="29">29. HOLOGRAM ORANGE🟠  FFMax</option>
+    <option value="30">30. HOLOGRAM PINK🩷 FFMax</option>
+    <option value="31">31. HOLOGRAM PURPLE🟣 FFMax</ooption>
+    <option value="32">32. HOLOGRAM KARAKTER FFMAX-CYAN🩵</option>
+    <option value="33">33. HOLOGRAM WAEPON FFORI-Purle💜</option>
+    
+    </select>    <div class="key-box" id="keyBox">  
+    BELUM ADA PASSWORD  
+  </div>  <button class="get" id="getBtn" onclick="getKey()">GET PASSWORD</button>
+<button class="copy" onclick="copyKey()">COPY PASSWORD</button>
+
+<div style="margin-top:18px;font-size:12px;color:#aaa;">  
+  © 2026 DezzXMods • All Rights Reserved<br>1x 𝙋𝙖𝙠𝙖𝙞, UPDATE SETIAP HARI  
+</div>  
+
+<script>  
+function robotType(el, text, speed = 45){
+  el.innerText = "";
+  let i = 0;
+
+  const t = setInterval(() => {
+    el.innerText += text[i];
+    i++;
+    if(i >= text.length) clearInterval(t);
+  }, speed);
+}
+robotType(
+  document.getElementById("robotWelcome"),
+  "WELCOME TO WEB GET PASSWORD ZIP"
+);
+
+function resetAll(){
+  const pin = prompt("🔐 KHUSUS ADMIN\nMasukkan PIN:");
+
+  if(pin !== "Dezzonwer20"){
+    alert(
+      "🚫 ACCESS DENIED\n" +
+      "⚠️ PIN ADMIN SALAH\n" +
+      "⛔ OPERASI DIBATALKAN"
+    );
+    return;
+  }
+
+  localStorage.clear();
+
+  alert(
+    "♻️ SYSTEM RESET SUCCESS\n" +
+    "🔓 SEMUA AKSES DIKUNCI ULANG\n" +
+    "✅ ADMIN CONTROL RESTORED"
+  );
+
+  location.reload();
+}
+
+const LOGIN_PREFIX = "LOGIN_USED_";
+const GLOBAL_PW_KEY = "GLOBAL_PW_USED_";
+
+// GANTI LOGIN DI SINI  
+const USERS = [
+  { user: "#WxWM_10K", pass: "#A6bG_Dezz" }, 
+  { user: "#UXTH_19K", pass: "#UXTH_19K" }, 
+  { user: "#uqzd_10K", pass: "#wUAz_Dezz" }, 
+  { user: "Dezz", pass: "wqRK_Dezz" }, 
+  { user: "Dezz", pass: "PuxV_Dezz" }, 
+  { user: "Dezz", pass: "1" }
 ];
-</script>
-<script src="//safelinku.com/js/web-script.js"></script>
 
-</head>
-<body><header>
+const LOGIN_KEY = "1"; 
+  
+// AUTO LOGIN JIKA SUDAH PERNAH LOGIN  
+function login(){
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
 
-    <h1>Website Download File/Mods</h1>
-    <p>Safelinku Versi DezZ</p>
-</header><main>
-    <h2>Download File Hologram</h2>
-    </a>
-    <h2>GET (AMBIL) PASSWORD ZIP DI SINI</h2>
-    <p>Unser/Pass Login<br>UNSER:#UXTH_19K<br>PASS:#UXTH_19K<br>Ambil lah hologram sesuai yang kamu suka, kamu hanya dapet 1x password zip</p>
-    <a class="download-btn" href="https://device-log.vercel.app/" target="_blank">
-    GET (AMBIL) PASSWORD ZIP DI SINI
-</a>
+  if(!u || !p){
+    alert("🚫 INPUT TIDAK VALID\n🔐 USERNAME & PASSWORD WAJIB DIISI");
+    return;
+  }
 
-<p>Cara melewati Link SaFeLink/SaFeFiLeKu</p>
-    <a class="download-btn" href="https://youtube.com/shorts/vyLfHIKgGCI?si=K-TZy_H5LdABxeew" target="_blank">
-    CARA LEWATIN LINK SFL/SFFLK
-</a>
+  const valid = USERS.some(acc => acc.user === u && acc.pass === p);
+  if(!valid){
+    alert("⛔ AUTHENTICATION FAILED\n USERNAME ATAU PASSWORD SALAH");
+    return;
+  }
 
+  const loginID = LOGIN_PREFIX + u + "_" + p;
 
-    <p>𝙅𝙊𝙄𝙉 𝘾𝙃𝘼𝙉𝙉𝙀𝙇</p><!-- CONTOH LINK YANG AKAN TERKENA SAFELINKU -->
-<div class="btn-group">
-    <a class="download-btn" href="https://whatsapp.com/channel/0029Vb7Gl23EFeXuLGF1yB1G" target="_blank">
-        SALURAN
-    </a>
-    <a class="download-btn" href="https://t.me/+nmDgMfjt-t9jYzA1" target="_blank">
-        TELEGRAM
-    </a>
-    <a class="download-btn" href="https://tiktok.com/@dezz_realmods" target="_blank">
-        TIKTOK
-    </a>
-    <a class="download-btn" href="https://www.youtube.com/@DezZXMods" target="_blank">
-        YOUTUBE
-    </a>
-    <a class="download-btn" href="https://webdezz.vercel.app/" target="_blank">
-   WEBSITE<br>user: Dezz<br>pass: Dezz1
-    </a>
-    <p>𝙆𝙡𝙞𝙠 𝙩𝙤𝙢𝙗𝙤𝙡 𝙙𝙞 𝙗𝙖𝙬𝙖𝙝 𝙪𝙣𝙩𝙪𝙠 𝙙𝙤𝙬𝙣𝙡𝙤𝙖𝙙.<br> ʜᴏʟᴏɢʀᴀᴍ ᴏʙʙ52</p>
-    <a class="download-btn" href="https://safefileku.com/download/5aA3wsMRWmgWIuqw" target="_blank">
-    HOLOGRAM WAEPON FFORI-Purle💜
-</a>
+    // CEK SUDAH PERNAH LOGIN DENGAN USER+PASS INI
+  if(localStorage.getItem(loginID)){
+    alert("🔐 SECURITY LOCK ACTIVE\n🚫 USER & PASSWORD SUDAH DIGUNAKAN\n⛔ AKSES DITUTUP");
+    return;
+  }
 
-    <a class="download-btn" href="https://sfl.gl/75ncIx" target="_blank">
-    HOLOGRAM KARAKTER FFMAX-CYAN🩵
-</a>
+  // SIMPAN LOGIN 1X
+  localStorage.setItem(loginID, "USED");
+  localStorage.setItem("CURRENT_LOGIN", loginID);
 
-<a class="download-btn" href="https://sfl.gl/ghamPC" target="_blank">
-    HOLOGRAM PURPLE🟣 FFMax
-</a>
+  document.getElementById("loginOverlay").style.display = "none";
+}
+function autoLogout(){
+  localStorage.removeItem("CURRENT_LOGIN");
 
-<a class="download-btn" href="https://sfl.gl/QkHts" target="_blank">
-    HOLOGRAM PINK🩷 FFMax
-</a>
+  setTimeout(() => {
+    document.getElementById("loginOverlay").style.display = "flex";
+    alert("⛔ SESSION TERMINATED\n 🔒 AUTO LOGOUT EXECUTED");
+  }, 1);
+}
+const keyBox = document.getElementById("keyBox");
+const getBtn = document.getElementById("getBtn");
+// ============================  
+// DAFTAR KEY PER KATEGORI  
+// ============================  
+const KEYS = {  
+  1: [  
+    "RedHolo_10KDX"  
+  ],  
+  2: [  
+    "DezzXmodz_HG10K"  
+  ],  
+  3: [  
+    "AbcdezZXMODS"  
+  ],   
+  4: [  
+    "TIMODSDEZZ"  
+  ],  
+  5: [  
+    "HoloEmber10"  
+  ],  
+  6: [  
+    "JANGANLUPABUY"  
+  ],  
+  7: [  
+    "PurpleVoid10"  
+  ],  
+  8: [  
+    "YellowFlux_K10"  
+  ],   
+  9: [  
+    "Dezz-HMJHQU-10K"  
+  ],  
+ 10: [  
+    "Dezz-5YWX4X-10K"  
+  ],   
+ 11: [  
+    "Dezz-XGTVEJ-10K"  
+ ],   
+ 12: [  
+    "Dezz-SZKSLB-10K"  
+   ],  
+ 13: [  
+    "Dezz-LX6GN5-10K"  
+   ],   
+ 14: [  
+    "Dezz-4VFU2C-10K"  
+    ],   
+ 15: [  
+    "Dezz-M3D928-10K"  
+   ],   
+ 16: [  
+    "Dezz-QQ98G7-10K"  
+   ],   
+ 17: [  
+    "Dezz-S4QS6X-10K"  
+   ],   
+ 18: [  
+    "Dezz-SH2DEY-10K"  
+    ],   
+ 19: [  
+    "Dezz-X582HF-10K"  
+   ], 
+   20:[
+  "DezzXBUA10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/MnuPMrvF" target="_blank">
-    HOLOGRAM ORANGE🟠  FFMax
-</a>
+21:[
+  "Dezz3S1D10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/Z48jufm" target="_blank">
-    HOLOGRAM RED🔴 FFMax
-</a>
+22:[
+  "DezzMSJZ10K"
+], 
+23:[
+  "Dezz5K8B10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/FgkUGyh" target="_blank">
-    HOLOGRAM YELLOW FFMax
-</a>
+24:[
+  "Dezz224Z10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/Q9tuQm" target="_blank">
-    HOLOGRAM WHITE ⚪ FFMax
-</a>
+25:[
+  "DezzD39B10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/q0yvPjhO" target="_blank">
-    HOLOGRAM BLUE🔵 FFMax
-</a>
+26:[
+  "DezzHNFU10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/QvEqP6y" target="_blank">
-     HOLOGRAM BLACK⚫ FFMax
-</a>
+27:[
+  "DezzJYV510K"
+],
 
-<a class="download-btn" href="https://sfl.gl/lnXRa" target="_blank">
-    HOLOGRAM BROWN🟤 FFMax
-</a>
+28:[
+  "DezzLKF210K"
+],
 
-<a class="download-btn" href="https://sfl.gl/sFAlP" target="_blank">
-    HOLOGRAM CYAN🩵 FFMax
-</a>
+29:[
+  "DezzRBDP10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/MkPx1fSQ" target="_blank">
-    HOLOGRAM GREEN🟢 FFMax
-</a>
+30:[
+  "DezzS35L10K"
+],
 
-<a class="download-btn" href="https://sfl.gl/Mu6Xm" target="_blank">
-    HOLOGRAM GREY🩶 FFMax
-</a>
+31:[
+  "DezzYT9Q10K"
+], 
+32:[
+  "#Rty9_Dezz"
+], 
+33:[
+  "6QwZ_Dezz"
+]
+};  
+  
+function getKey(){
+  const loginID = localStorage.getItem("CURRENT_LOGIN");
+  if(!loginID){
+    alert("🚫 Akses ditolak\n🔒 Login diperlukan");
+    return;
+  }
 
-<a class="download-btn" href="https://sfl.gl/NYUgYNQd" target="_blank">
-    HOLOGRAM ORANGYE X GLOW TRANS.zip
-</a>
+  const globalKey = GLOBAL_PW_KEY + loginID;
 
-<a class="download-btn" href="https://sfl.gl/Va2Wb8q" target="_blank">
-    HOLOGRAM RED X GLOW TRANS.zip
-</a>
+  // 🔒 JIKA SUDAH PERNAH AMBIL PASSWORD
+  if(localStorage.getItem(globalKey)){
+    keyBox.innerText = localStorage.getItem(globalKey);
+    getBtn.disabled = true;
+    getBtn.innerText = "PASSWORD SUDAH DIAMBIL";
+    return;
+  }
 
-<a class="download-btn" href="https://sfl.gl/QqR6w5R" target="_blank">
-    HOLOGRAM PUTIH X GLOW TRANS.zip
-</a>
+  const type = document.getElementById("keyType").value;
+  if(!type){
+    alert("Pilih menu password dulu!");
+    return;
+  }
 
-<a class="download-btn" href="https://sfl.gl/xYF2A" target="_blank">
-    HOLOGRAM YELLOW X GLOW TRANS.zip
-</a>
+  const list = KEYS[type];
+  const selectedKey = list[Math.floor(Math.random() * list.length)];
 
-<a class="download-btn" href="https://sfl.gl/BBvJswni" target="_blank">
-    HOLOGRAM BLUE X GLOW TRANS.zip
-</a>
+  // SIMPAN PASSWORD GLOBAL (1x SAJA)
+  localStorage.setItem(globalKey, selectedKey);
+const keyBox = document.getElementById("keyBox");
+const getBtn = document.getElementById("getBtn");
+  keyBox.innerText = selectedKey;
+  getBtn.disabled = true;
+  getBtn.innerText = "PASSWORD SUDAH DIAMBIL";
+}
+  
+// COPY KEY  
+function copyKey(){  
+  const text = keyBox.innerText;  
 
-<a class="download-btn" href="https://sfl.gl/2JaRpK" target="_blank">
-    HOLOGRAM PURPLE X GLOW TRANS.zip
-</a>
+  if(text === "BELUM ADA PASSWORD"){  
+    alert("🚫 AKSI DIBLOKIR\n🔑 AMBIL PASSWORD TERLEBIH DAHULU");  
+    return;  
+  }  
 
-<a class="download-btn" href="https://sfl.gl/8MSQ" target="_blank">
-    BYPASSS PW zip:-Share_and_suport
-</a>
+  navigator.clipboard.writeText(text).then(() => {
+    alert("▶PASSWORD SUCCESS... \n 🔒 Sistem logout otomatis 🫶");
+    autoLogout(); // ✅ LOGOUT SETELAH COPY
+  });
+}
 
-<a class="download-btn" href="https://sfl.gl/pvson" target="_blank">
-    HOLOGRAM 🔴 RED #BY-DEZZ
-</a>
+document.getElementById("keyType").addEventListener("change", function(){
+  const loginID = localStorage.getItem("CURRENT_LOGIN");
+  if(!loginID) return;
 
-<a class="download-btn" href="https://sfl.gl/MYM301n" target="_blank">
-    HACK KARAKTER
-</a>
+  const globalKey = GLOBAL_PW_KEY + loginID;
 
-<a class="download-btn" href="https://sfl.gl/uMZvsN" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙍𝙚𝙙🔴
-</a>
-
-<a class="download-btn" href="https://sfl.gl/SvNYL" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙔𝙚𝙡𝙡𝙤𝙬 🟡.zip
-</a>
-
-<a class="download-btn" href="https://sfl.gl/RMifPjY" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙊𝙧𝙖𝙣𝙮𝙚 🟠.zip
-</a>
-
-<a class="download-btn" href="https://sfl.gl/pzh8Xd" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 𝙋𝙪𝙧𝙥𝙡𝙚 🟣.zip
-</a>
-
-<a class="download-btn" href="https://sfl.gl/ZRd0k" target="_blank">
-    HOLO SENJATA BLUE 🔵.zip
-</a>
-
-<a class="download-btn" href="https://sfl.gl/1jdxQ" target="_blank">
-    GRAFIK MINECRAFT OB52  ff max end ori
-</a>
-
-<a class="download-btn" href="https://sfl.gl/J5Tzg" target="_blank">
-    HOLOGRAM GREEN 🟢.zip
-</a>
-
-<a class="download-btn" href="https://sfl.gl/m9iCIDI" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 🟢 HIJAU TOXIC.zip
-</a>
-
-<a class="download-btn" href="https://sfl.gl/QS0nEmu" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  GreenXBlue 🟢x🔵
-</a>
-
-<a class="download-btn" href="https://sfl.gl/XGoB" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢  BlueXPurple🔵X🟣
-</a>
-
-<a class="download-btn" href="https://sfl.gl/mOIMJuL" target="_blank">
-    𝙃𝙤𝙡𝙤𝙜𝙧𝙖𝙢 White ⚪ ☠️ MODE EXTREME
-</a>
-
-<a class="download-btn" href="https://sfl.gl/u3t0P" target="_blank">
-    HOLOGRAM GREEN X GLOW TRANS.zip
-</a>
-
-<a class="download-btn" href="https://sociabuzz.com/dezzreal/tribe" target="_blank">
-    ☕ Support
-</a>
-
-<a class="download-btn" href="https://sfl.gl/IrAPa" target="_blank">
-    🇮🇳 VPN INDIA APK
-</a>
-
-<a class="download-btn" href="https://sfl.gl/j5XHEw" target="_blank">
-    🧩 SHIZUKU APK
-</a>
-
-
-<p>DAGET 24 Jam<br>🤫SIAPA CEPAT DIA DAPAT🤫<br>☟☟☟☟☟</p>
-<a class="download-btn" href="https://link.dana.id/danakaget?c=s49gg7tk9&r=fG4tp1&orderId=20260218101214845915010300166992364787053" target="_blank">
-    1. Aku lagi sebar DANA Kaget nih! Yuk, sikat segera sebelum melayang 💸💸💸
-</a>
-<a class="download-btn" href="https://web-sfl.vercel.app/" target="_blank">
-    2. Aku lagi sebar DANA Kaget nih! Yuk, sikat segera sebelum melayang 💸💸💸
-</a>
-<a class="download-btn" href="https://web-sfl.vercel.app" target="_blank">
-    3. Aku lagi sebar DANA Kaget nih! Yuk, sikat segera sebelum melayang 💸💸💸
-</a>
-</main><footer>
-    <p>© 2026 -Dezz</p>   
-</footer>
-</body>
+  if(localStorage.getItem(globalKey)){
+    keyBox.innerText = localStorage.getItem(globalKey);
+    getBtn.disabled = true;
+    getBtn.innerText = "⛔ ACCESS LOCKED\nPASSWORD TELAH DIKLAIM";
+  }else{
+    keyBox.innerText = "PASSWORD STATUS: INACTIVE";
+    getBtn.disabled = false;
+    getBtn.innerText = "GET PASSWORD";
+  }
+});
+</script> 
+</body>  
 </html>
